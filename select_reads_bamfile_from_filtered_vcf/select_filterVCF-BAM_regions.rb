@@ -7,8 +7,8 @@ def extract_from_bam(line)
 	bamfile = ARGV[0]
 	array = line.split("\t")
 	File.new("Reading-out.sam", "w")
-#	puts "source samtools-0.1.19; samtools view #{bamfile} #{array[1]}:#{array[2]}-#{array[2]} -o Reading-out.sam"
-	%x[source samtools-0.1.19; samtools view #{bamfile} #{array[1]}:#{array[2]}-#{array[2]} -o Reading-out.sam]
+#	puts "source samtools-0.1.19; samtools view #{bamfile} #{array[4]}:#{array[5]}-#{array[5]} -o Reading-out.sam"
+	%x[source samtools-0.1.19; samtools view #{bamfile} #{array[4]}:#{array[5]}-#{array[5]} -o Reading-out.sam]
 	sam = File.read("Reading-out.sam")
 	alignments = sam.split("\n")
 	alignments.each do |string|
@@ -18,9 +18,9 @@ def extract_from_bam(line)
 	data
 end
 
-outfile = File.new("Test-#{ARGV[0]}-out.sam", "w")
-headers = %x[source samtools-0.1.19; samtools view -H #{ARGV[0]}]
-outfile.puts headers
+outfile = File.new("#{ARGV[0]}-selected.sam", "w")
+# headers = %x[source samtools-0.1.19; samtools view -H #{ARGV[0]}]
+# outfile.puts headers
 
 lines = File.read(ARGV[1])
 results = lines.split("\n")
