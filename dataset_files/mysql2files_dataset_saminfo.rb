@@ -45,13 +45,17 @@ end
 
 bamfiles = Dataset.pluck(:bam_filename)
 bamfiles = bamfiles.uniq
+puts "bam_filename\tPattern_count"
 bamfiles.each do |bamfile|
+  n = 0
   samout = File.new("Dataset_sam-entries-#{bamfile}.sam", "w")
   variant = File.new("Dataset_entries-#{bamfile}.txt", "w")
   Dataset.find_each do |id|
     if Dataset.find_by(id: id).bam_filename == bamfile
       variant.puts "#{Dataset.find_by(id: id).id}\t#{Dataset.find_by(id: id).pos}\t#{Dataset.find_by(id: id).base_pattern.gsub("\n","\t")}\t#{Dataset.find_by(id: id).bam_filename}"
       samout.puts Dataset.find_by(id: id).sam_file
+      n = 1 + n
     end
   end
+  puts "#{bamfile}\t#{n}"
 end

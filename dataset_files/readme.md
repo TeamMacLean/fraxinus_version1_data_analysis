@@ -72,4 +72,7 @@ There are 5 tables in the database
 |new_score
 |prev_score
 
+produced sam entries and dataset pattern entries using following command
+
+`ruby mysql2files_dataset_saminfo.rb > bamfilename_pattern_count.txt`  
 
