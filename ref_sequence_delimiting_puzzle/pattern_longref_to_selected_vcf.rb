@@ -84,6 +84,7 @@ File.open(args[:vcf], "r").each_except_comments do |record|
   vcf = Bio::DB::Vcf.new(record)
   if is_useable?(vcf,fasta,params) and subseq = ref_sequence_is_ok?(vcf,fasta)
     longseq, start, stop = longref_sequence(vcf,fasta)
-    puts [longseq, start, stop, subseq, record].join("\t")
+    longseq2 = longseq.gsub(subseq, subseq.downcase)
+    puts [longseq2, start, stop, subseq, record].join("\t")
   end
 end
