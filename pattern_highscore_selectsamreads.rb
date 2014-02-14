@@ -61,7 +61,6 @@ Dir.glob("*-selected.sam") do |samfile|
 	sam.split("\n").each do |entry|
 			info = entry.split("\t")
 			term = [info[0], info[1], info[3]].join("_")
-			puts "#{term}"
 			sam_select_read[bamfile][term] = entry
 	end
 	print "\n#{samfile}\t#{bamfile}\t#{sam_select_read[bamfile].length}"
@@ -106,12 +105,12 @@ def puzzle_input_select(samstring, samread, data, bamfile)
 	readcount = 0;
 	samstring.split("\n").each do |string|
 		saminfo = string.split("\t")
-		samread.key?(saminfo[0])
-		term = [saminfo[0], saminfo[1], saminfo[3]].join("_")
-		puts "#{term}"
-		if data[bamfile].key?(term.to_s) == true
-			readcount = readcount + 1
-			hash[saminfo[0]] = saminfo[5]
+		if samread.key?(saminfo[0]) == true
+			term = [saminfo[0], saminfo[1], saminfo[3]].join("_")
+			if data[bamfile].key?(term.to_s) == true
+				readcount = readcount + 1
+				hash[saminfo[0]] = saminfo[5]
+			end
 		end
 	end
 	return hash, readcount
