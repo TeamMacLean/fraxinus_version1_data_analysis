@@ -18,8 +18,9 @@ class Array
 end
 
 users = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
-patterns = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
-userstat = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+#patterns = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+#userstat = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+
 ## dataset table
 ##	id	sam_file	base_pattern	active	pos	bam_filename
 ## user table
@@ -33,22 +34,28 @@ Dataset.find_each do |datasetid|
 	players = Pattern.where(dataset_id: datasetid.id).pluck(:user_id)
 	
 	Pattern.where(dataset_id: datasetid.id).each do | pattern|
-		users[pattern.user_id][datasetid.id] = pattern
-		patterns[datasetid.id][pattern.last_saved] = pattern
+		# users[pattern.user_id][datasetid.id] = pattern
+		# patterns[datasetid.id][pattern.last_saved] = pattern
 		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][datasetid.id] = 1
 	end
 end
 
-userstat.each_key { |userid|
-	days_no = userstat[userid].length
-	tasks = []
-	userstat[userid].each_key { |day|
-		tasks.push(userstat[userid][day].length)
-	}
-	average = tasks.sum/tasks.size
-	print "#{userid}\t#{days_no}\t#{average}\n"
-}
-
+print "UserId\tNoofDays\tTotalTasks\tMeanTaskperDay\tFBScore\tFBBonus\tFBID\n"
+User.find_each do |eachuser|
+	userid = eachuser.id
+	userstat.has_key?(userid)
+		days_no = userstat[userid].length
+		tasks = []
+		userstat[userid].each_key { |day|
+			tasks.push(userstat[userid][day].length)
+		}
+		average = tasks.sum/tasks.size
+		print "#{userid}\t#{days_no}\t#{tasks.sum}\t#{average.to_f}\t"
+	else
+		print "#{userid}\t0\t0\t0\t"
+	end
+	print "#{eachuser.score}\t#{eachuser.bonus_points}\t#{eachuser.fbid}\n"
+end
 
 
 =begin
