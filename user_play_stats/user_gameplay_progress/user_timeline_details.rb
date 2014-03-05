@@ -17,9 +17,9 @@ class Array
     end
 end
 
-users = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+#users = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 #patterns = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
-#userstat = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+userstat = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 
 ## dataset table
 ##	id	sam_file	base_pattern	active	pos	bam_filename
