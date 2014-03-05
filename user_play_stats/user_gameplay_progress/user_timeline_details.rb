@@ -43,7 +43,7 @@ end
 print "UserId\tNoofDays\tTotalTasks\tMeanTaskperDay\tFBScore\tFBBonus\tFBID\n"
 User.find_each do |eachuser|
 	userid = eachuser.id
-	userstat.has_key?(userid)
+	if userstat.has_key?(userid) == true
 		days_no = userstat[userid].length
 		tasks = []
 		userstat[userid].each_key { |day|
