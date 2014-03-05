@@ -63,8 +63,8 @@ Dir.glob("*.vcf") do |filename|
 					end
 					percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 
-#					if percent2 > percent and (percent2 - percent) > 0.5
-					if percent2 > percent
+					if percent2 > percent and (percent2 - percent) > 0.5
+#					if percent2 > percent
 						stats = [percent, match, mismatch, percent2, match2, mismatch2].join("\t")
 						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
 						playeralign = Cigar.aligner(types2, counts2, info[0], initial_gap2, readseq)
@@ -80,7 +80,7 @@ Dir.glob("*.vcf") do |filename|
 
 	file = File.new("#{bamfilename}_player_alignments_selected.txt", "w")
 	variants.each_key { |key|
-		if variants[key].length > 1 
+#		if variants[key].length > 1 
 			file.print "#{key}\n"
 			useraln = []
 			variants[key].each_key { |puzzle|
@@ -94,7 +94,7 @@ Dir.glob("*.vcf") do |filename|
 			useraln.each { |aln|
 				file.print "#{aln}"
 			}
-		end
+#		end
 	}
 end
 
