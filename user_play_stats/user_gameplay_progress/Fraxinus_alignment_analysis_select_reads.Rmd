@@ -1,0 +1,102 @@
+Analysis of Fraxinus Player stats
+========================================================
+
+Background
+--------------------------------------------------------
+Each Fraxinus player user access stats are printed such as number of days they are active and number pattern alignments they have attempted during the period
+
+Resulting file has following header  
+* `"UserId"   "NoofDays"  "TotalTasks"  "MeanTaskperDay"    "FBScore"   "FBBonus"   "FBID"`  
+
+Meaning of the terms used in the headers mentioned above:
+
+| Term              | Definition                                                                                                                            |
+|:----------------- |:------------------------------------------------------------------------------------------------------------------------------------  |
+| UserId            | User Id number                                                                                                                            |
+| NoofDays	        |	Number of days user has actively visited Fraxinus                                                                                          |
+| TotalTasks        |	Total number of pattern alignmnets perfomred by the User                                                  |
+| MeanTaskperDay	  |	Mean tasks per day                                                                                                     |
+| FBScore           |	Points scored in Facebook  | 
+| FBBonus           | Total number of bonus points achieved  | 
+| FBID              | Facebook User Id  | 
+
+Analysis
+--------------------------------------------------------
+Resulting table was loaded in to R and the plots are generated to observe the trends in user alignments
+
+Load libraries and the datage
+```{r setup, include=FALSE}
+opts_chunk$set(dev = 'pdf')
+library(ggplot2)
+library(gridExtra)
+user_data <- read.delim("users_progress_report.txt", header=T)
+
+```
+
+There are 
+## `r length(user_data$UserId)` 
+players have accesssed Fraxinus
+
+
+### Distribution of number of active days from all players:
+
+```{r fig.width=7, fig.height=6}
+ggplot(data=user_data, aes(NoofDays)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("Distribution of no. of active days from all players")
+
+```
+
+
+### Distribution of number of alignment task from all palyers:
+
+```{r fig.width=7, fig.height=6}
+ggplot(data=user_data, aes(TotalTasks)) + geom_histogram(binwidth=10) + scale_y_sqrt() + ggtitle("Distribution of no. of alignment tasks from all players")
+
+```
+
+
+### Distribution of mean number of alignment task per day from all palyers:
+
+```{r fig.width=7, fig.height=6}
+ggplot(data=user_data, aes(TotalTasks/NoofDays)) + geom_histogram(binwidth=10) + scale_y_sqrt() + ggtitle("Distribution of mean no. of alignment tasks per day from all players")
+
+```
+
+
+### Distribution of facebook scores from all players:
+
+```{r fig.width=7, fig.height=6}
+ggplot(data=user_data, aes(FBScore)) + geom_histogram(binwidth=10) + scale_y_sqrt() + ggtitle("Facebook scores from all players")
+
+```
+
+
+### Distribution of frequency days:
+
+```{r fig.width=14, fig.height=6}
+user_data <- user_data[order(user_data$NoofDays, decreasing = TRUE),]
+user_data$Rank <- c(1:length(user_data$UserId))
+ggplot(data=user_data, aes(Rank, NoofDays)) + geom_point() + scale_x_log10() + scale_y_log10() + ggtitle("Log-log distribution")
+
+```
+
+
+### Distribution of frequency tasks:
+
+```{r fig.width=14, fig.height=6}
+user_data <- user_data[order(user_data$TotalTasks, decreasing = TRUE),]
+user_data$Rank <- c(1:length(user_data$UserId))
+ggplot(data=user_data, aes(Rank, TotalTasks)) + geom_point() + scale_x_log10() + scale_y_log10() + ggtitle("Log-log distribution")
+
+```
+
+### Distribution of frequency FBScore:
+
+```{r fig.width=14, fig.height=6}
+user_data <- user_data[order(user_data$FBScore, decreasing = TRUE),]
+user_data$Rank <- c(1:length(user_data$UserId))
+ggplot(data=user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() + scale_y_log10() + ggtitle("Log-log distribution")
+
+```
+
+
+
