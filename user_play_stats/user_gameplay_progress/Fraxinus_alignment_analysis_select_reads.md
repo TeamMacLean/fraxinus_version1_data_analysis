@@ -10,15 +10,15 @@ Resulting file has following header
 
 Meaning of the terms used in the headers mentioned above:
 
-| Term              | Definition                                                                                                                            |
-|:----------------- |:------------------------------------------------------------------------------------------------------------------------------------  |
-| UserId            | User Id number                                                                                                                            |
-| NoofDays	        |	Number of days user has actively visited Fraxinus                                                                                          |
-| TotalTasks        |	Total number of pattern alignmnets perfomred by the User                                                  |
-| MeanTaskperDay	  |	Mean tasks per day                                                                                                     |
-| FBScore           |	Points scored in Facebook  | 
-| FBBonus           | Total number of bonus points achieved  | 
-| FBID              | Facebook User Id  | 
+| Term              | Definition                                                  |
+|:----------------- |:----------------------------------------------------------- |
+| UserId            | User Id number                                              |
+| NoofDays	        |	Number of days user has actively visited Fraxinus           |
+| TotalTasks        |	Total number of pattern alignmnets perfomred by the User    |
+| MeanTaskperDay	  |	Mean tasks per day                                          |
+| FBScore           |	Points scored in Facebook                                   | 
+| FBBonus           | Total number of bonus points achieved                       | 
+| FBID              | Facebook User Id                                            | 
 
 Analysis
 --------------------------------------------------------
@@ -108,6 +108,7 @@ ggplot(data = user_data, aes(Rank, TotalTasks)) + geom_point() + scale_x_log10()
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.pdf) 
 
 
+
 ### Distribution of frequency FBScore:
 
 
@@ -122,4 +123,69 @@ ggplot(data = user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() +
 
 
 
+
+### Cumulative distribution of visitor days:
+
+
+```r
+user_data$NoofDays[user_data$NoofDays == 0] <- 1
+days <- user_data$NoofDays
+breaks <- seq(0, 20, by = 1)
+dayscut <- cut(days, breaks, right = FALSE)
+daysfreq <- table(dayscut)
+days.freq <- cbind(daysfreq)
+dayspercentfreq <- days.freq
+dayspercentfreq[1:20] <- (days.freq[1:20] * 100)/nrow(user_data)
+cumfreq <- cumsum(dayspercentfreq)
+cumfreq <- table(cumfreq)
+cumfreq <- transform(cumfreq)
+colnames(cumfreq) <- c("CumulativeUsers", "NoofDays")
+cumfreq$NoofDays <- seq(0, 19, by = 1)
+cumfreq$CumulativeUsers <- cumsum(dayspercentfreq)
+ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active days")
+```
+
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.pdf) 
+
+
+
+
+### Cumulative distribution of visitor tasks:
+
+
+```r
+tasks <- user_data$TotalTasks
+breaks = seq(-1, 19, by = 1)
+taskscut <- cut(tasks, breaks, right = FALSE)
+tasksfreq <- table(taskscut)
+tasks.freq <- cbind(tasksfreq)
+taskspercentfreq <- tasks.freq
+taskspercentfreq[1:20] <- (tasks.freq[1:20] * 100)/nrow(user_data)
+cumfreq <- cumsum(taskspercentfreq)
+cumfreq <- table(cumfreq)
+cumfreq <- transform(cumfreq)
+colnames(cumfreq) <- c("CumulativeUsers", "NoofTasks")
+cumfreq$NoofTasks <- seq(-1, 18, by = 1)
+cumfreq$CumulativeUsers <- cumsum(taskspercentfreq)
+ggplot(data = cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active tasks")
+```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.pdf) 
+
+
+
+There are 
+## 24822 
+players have accesssed Fraxinus
+
+There are 
+## 22756
+players have accessed the site for less than three days
+
+they account for
+## 91.6767
+percent of the players and these player have provided
+
+## 31.5336
+percent of the aligment solutions provided by all players
 

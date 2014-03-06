@@ -303,6 +303,69 @@ ggplot(data = user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() +
 
 <p><img src="figure/unnamed-chunk-7.pdf" alt="plot of chunk unnamed-chunk-7"/> </p>
 
+<h3>Cumulative distribution of visitor days:</h3>
+
+<pre><code class="r">user_data$NoofDays[user_data$NoofDays == 0] &lt;- 1
+days &lt;- user_data$NoofDays
+breaks &lt;- seq(0, 20, by = 1)
+dayscut &lt;- cut(days, breaks, right = FALSE)
+daysfreq &lt;- table(dayscut)
+days.freq &lt;- cbind(daysfreq)
+dayspercentfreq &lt;- days.freq
+dayspercentfreq[1:20] &lt;- (days.freq[1:20] * 100)/nrow(user_data)
+cumfreq &lt;- cumsum(dayspercentfreq)
+cumfreq &lt;- table(cumfreq)
+cumfreq &lt;- transform(cumfreq)
+colnames(cumfreq) &lt;- c(&quot;CumulativeUsers&quot;, &quot;NoofDays&quot;)
+cumfreq$NoofDays &lt;- seq(0, 19, by = 1)
+cumfreq$CumulativeUsers &lt;- cumsum(dayspercentfreq)
+ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle(&quot;Cumulative User distribution - active days&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-8.pdf" alt="plot of chunk unnamed-chunk-8"/> </p>
+
+<h3>Cumulative distribution of visitor tasks:</h3>
+
+<pre><code class="r">tasks &lt;- user_data$TotalTasks
+breaks = seq(-1, 19, by = 1)
+taskscut &lt;- cut(tasks, breaks, right = FALSE)
+tasksfreq &lt;- table(taskscut)
+tasks.freq &lt;- cbind(tasksfreq)
+taskspercentfreq &lt;- tasks.freq
+taskspercentfreq[1:20] &lt;- (tasks.freq[1:20] * 100)/nrow(user_data)
+cumfreq &lt;- cumsum(taskspercentfreq)
+cumfreq &lt;- table(cumfreq)
+cumfreq &lt;- transform(cumfreq)
+colnames(cumfreq) &lt;- c(&quot;CumulativeUsers&quot;, &quot;NoofTasks&quot;)
+cumfreq$NoofTasks &lt;- seq(-1, 18, by = 1)
+cumfreq$CumulativeUsers &lt;- cumsum(taskspercentfreq)
+ggplot(data = cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + ggtitle(&quot;Cumulative User distribution - active tasks&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-9.pdf" alt="plot of chunk unnamed-chunk-9"/> </p>
+
+<p>There are </p>
+
+<h2>24822</h2>
+
+<p>players have accesssed Fraxinus</p>
+
+<p>There are </p>
+
+<h2>22756</h2>
+
+<p>players have accessed the site for less than three days</p>
+
+<p>they account for</p>
+
+<h2>91.6767</h2>
+
+<p>percent of the players and these player have provided</p>
+
+<h2>31.5336</h2>
+
+<p>percent of the aligment solutions provided by all players</p>
+
 </body>
 
 </html>

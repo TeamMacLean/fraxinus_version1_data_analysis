@@ -10,15 +10,15 @@ Resulting file has following header
 
 Meaning of the terms used in the headers mentioned above:
 
-| Term              | Definition                                                                                                                            |
-|:----------------- |:------------------------------------------------------------------------------------------------------------------------------------  |
-| UserId            | User Id number                                                                                                                            |
-| NoofDays	        |	Number of days user has actively visited Fraxinus                                                                                          |
-| TotalTasks        |	Total number of pattern alignmnets perfomred by the User                                                  |
-| MeanTaskperDay	  |	Mean tasks per day                                                                                                     |
-| FBScore           |	Points scored in Facebook  | 
-| FBBonus           | Total number of bonus points achieved  | 
-| FBID              | Facebook User Id  | 
+| Term              | Definition                                                  |
+|:----------------- |:----------------------------------------------------------- |
+| UserId            | User Id number                                              |
+| NoofDays	        |	Number of days user has actively visited Fraxinus           |
+| TotalTasks        |	Total number of pattern alignmnets perfomred by the User    |
+| MeanTaskperDay	  |	Mean tasks per day                                          |
+| FBScore           |	Points scored in Facebook                                   | 
+| FBBonus           | Total number of bonus points achieved                       | 
+| FBID              | Facebook User Id                                            | 
 
 Analysis
 --------------------------------------------------------
@@ -72,7 +72,7 @@ ggplot(data=user_data, aes(FBScore)) + geom_histogram(binwidth=10) + scale_y_sqr
 
 ### Distribution of frequency days:
 
-```{r fig.width=14, fig.height=6}
+```{r fig.width=7, fig.height=6}
 user_data <- user_data[order(user_data$NoofDays, decreasing = TRUE),]
 user_data$Rank <- c(1:length(user_data$UserId))
 ggplot(data=user_data, aes(Rank, NoofDays)) + geom_point() + scale_x_log10() + scale_y_log10() + ggtitle("Log-log distribution")
@@ -82,16 +82,17 @@ ggplot(data=user_data, aes(Rank, NoofDays)) + geom_point() + scale_x_log10() + s
 
 ### Distribution of frequency tasks:
 
-```{r fig.width=14, fig.height=6}
+```{r fig.width=7, fig.height=6}
 user_data <- user_data[order(user_data$TotalTasks, decreasing = TRUE),]
 user_data$Rank <- c(1:length(user_data$UserId))
 ggplot(data=user_data, aes(Rank, TotalTasks)) + geom_point() + scale_x_log10() + scale_y_log10() + ggtitle("Log-log distribution")
 
 ```
 
+
 ### Distribution of frequency FBScore:
 
-```{r fig.width=14, fig.height=6}
+```{r fig.width=7, fig.height=6}
 user_data <- user_data[order(user_data$FBScore, decreasing = TRUE),]
 user_data$Rank <- c(1:length(user_data$UserId))
 ggplot(data=user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() + scale_y_log10() + ggtitle("Log-log distribution")
@@ -99,4 +100,63 @@ ggplot(data=user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() + sc
 ```
 
 
+
+### Cumulative distribution of visitor days:
+
+```{r fig.width=7, fig.height=6}
+user_data$NoofDays[user_data$NoofDays == 0] <- 1
+days <- user_data$NoofDays
+breaks <- seq(0,20, by=1)
+dayscut <- cut(days, breaks, right=FALSE)
+daysfreq <- table(dayscut)
+days.freq <- cbind(daysfreq)
+dayspercentfreq <- days.freq
+dayspercentfreq[1:20] <- (days.freq[1:20]*100)/nrow(user_data)
+cumfreq <- cumsum(dayspercentfreq)
+cumfreq <- table(cumfreq)
+cumfreq <- transform(cumfreq)
+colnames(cumfreq) <- c("CumulativeUsers", "NoofDays")
+cumfreq$NoofDays <- seq(0,19, by=1)
+cumfreq$CumulativeUsers <- cumsum(dayspercentfreq)
+ggplot(data=cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active days")
+
+```
+
+
+
+### Cumulative distribution of visitor tasks:
+
+```{r fig.width=7, fig.height=6}
+tasks <- user_data$TotalTasks
+breaks = seq(-1,19, by=1)
+taskscut <- cut(tasks, breaks, right=FALSE)
+tasksfreq <- table(taskscut)
+tasks.freq <- cbind(tasksfreq)
+taskspercentfreq <- tasks.freq
+taskspercentfreq[1:20] <- (tasks.freq[1:20]*100)/nrow(user_data)
+cumfreq <- cumsum(taskspercentfreq)
+cumfreq <- table(cumfreq)
+cumfreq <- transform(cumfreq)
+colnames(cumfreq) <- c("CumulativeUsers", "NoofTasks")
+cumfreq$NoofTasks <- seq(-1,18, by=1)
+cumfreq$CumulativeUsers <- cumsum(taskspercentfreq)
+ggplot(data=cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active tasks")
+
+```
+
+
+There are 
+## `r nrow(user_data)` 
+players have accesssed Fraxinus
+
+There are 
+## `r nrow(subset(user_data, user_data$NoofDays < 3))`
+players have accessed the site for less than three days
+
+they account for
+## `r (nrow(subset(user_data, user_data$NoofDays < 3)) * 100 / nrow(user_data))`
+percent of the players and these player have provided
+
+## `r (sum(subset(user_data, user_data$NoofDays < 3)$TotalTasks) * 100/sum(user_data$TotalTasks))`
+percent of the aligment solutions provided by all players
 
