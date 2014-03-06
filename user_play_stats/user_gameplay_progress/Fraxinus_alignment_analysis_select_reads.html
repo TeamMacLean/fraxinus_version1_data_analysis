@@ -313,12 +313,8 @@ daysfreq &lt;- table(dayscut)
 days.freq &lt;- cbind(daysfreq)
 dayspercentfreq &lt;- days.freq
 dayspercentfreq[1:20] &lt;- (days.freq[1:20] * 100)/nrow(user_data)
-cumfreq &lt;- cumsum(dayspercentfreq)
-cumfreq &lt;- table(cumfreq)
-cumfreq &lt;- transform(cumfreq)
-colnames(cumfreq) &lt;- c(&quot;CumulativeUsers&quot;, &quot;NoofDays&quot;)
-cumfreq$NoofDays &lt;- seq(0, 19, by = 1)
-cumfreq$CumulativeUsers &lt;- cumsum(dayspercentfreq)
+cumfreq &lt;- data.frame(CumulativeUsers = cumsum(dayspercentfreq), NoofDays = seq(0, 
+    19, by = 1))
 ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle(&quot;Cumulative User distribution - active days&quot;)
 </code></pre>
 
@@ -333,13 +329,13 @@ tasksfreq &lt;- table(taskscut)
 tasks.freq &lt;- cbind(tasksfreq)
 taskspercentfreq &lt;- tasks.freq
 taskspercentfreq[1:20] &lt;- (tasks.freq[1:20] * 100)/nrow(user_data)
-cumfreq &lt;- cumsum(taskspercentfreq)
-cumfreq &lt;- table(cumfreq)
-cumfreq &lt;- transform(cumfreq)
-colnames(cumfreq) &lt;- c(&quot;CumulativeUsers&quot;, &quot;NoofTasks&quot;)
-cumfreq$NoofTasks &lt;- seq(-1, 18, by = 1)
-cumfreq$CumulativeUsers &lt;- cumsum(taskspercentfreq)
-ggplot(data = cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + ggtitle(&quot;Cumulative User distribution - active tasks&quot;)
+cumfreq &lt;- data.frame(CumulativeUsers = cumsum(taskspercentfreq), NoofTasks = seq(-1, 
+    18, by = 1))
+ggplot(data = cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + xlim(0, 
+    20) + ggtitle(&quot;Cumulative User distribution - active tasks&quot;)
+</code></pre>
+
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).
 </code></pre>
 
 <p><img src="figure/unnamed-chunk-9.pdf" alt="plot of chunk unnamed-chunk-9"/> </p>
@@ -354,7 +350,9 @@ ggplot(data = cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + ggtitle
 
 <h2>22756</h2>
 
-<p>players have accessed the site for less than three days</p>
+<p>players have accessed the site </p>
+
+<h2>for less than three days</h2>
 
 <p>they account for</p>
 

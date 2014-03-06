@@ -112,12 +112,7 @@ daysfreq <- table(dayscut)
 days.freq <- cbind(daysfreq)
 dayspercentfreq <- days.freq
 dayspercentfreq[1:20] <- (days.freq[1:20]*100)/nrow(user_data)
-cumfreq <- cumsum(dayspercentfreq)
-cumfreq <- table(cumfreq)
-cumfreq <- transform(cumfreq)
-colnames(cumfreq) <- c("CumulativeUsers", "NoofDays")
-cumfreq$NoofDays <- seq(0,19, by=1)
-cumfreq$CumulativeUsers <- cumsum(dayspercentfreq)
+cumfreq <- data.frame("CumulativeUsers"=cumsum(dayspercentfreq), "NoofDays"= seq(0,19, by=1))
 ggplot(data=cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active days")
 
 ```
@@ -134,13 +129,8 @@ tasksfreq <- table(taskscut)
 tasks.freq <- cbind(tasksfreq)
 taskspercentfreq <- tasks.freq
 taskspercentfreq[1:20] <- (tasks.freq[1:20]*100)/nrow(user_data)
-cumfreq <- cumsum(taskspercentfreq)
-cumfreq <- table(cumfreq)
-cumfreq <- transform(cumfreq)
-colnames(cumfreq) <- c("CumulativeUsers", "NoofTasks")
-cumfreq$NoofTasks <- seq(-1,18, by=1)
-cumfreq$CumulativeUsers <- cumsum(taskspercentfreq)
-ggplot(data=cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active tasks")
+cumfreq <- data.frame("CumulativeUsers"=cumsum(taskspercentfreq), "NoofTasks"= seq(-1,18, by=1))
+ggplot(data=cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + xlim(0,20) + ggtitle("Cumulative User distribution - active tasks")
 
 ```
 
@@ -151,7 +141,8 @@ players have accesssed Fraxinus
 
 There are 
 ## `r nrow(subset(user_data, user_data$NoofDays < 3))`
-players have accessed the site for less than three days
+players have accessed the site 
+## for less than three days
 
 they account for
 ## `r (nrow(subset(user_data, user_data$NoofDays < 3)) * 100 / nrow(user_data))`
