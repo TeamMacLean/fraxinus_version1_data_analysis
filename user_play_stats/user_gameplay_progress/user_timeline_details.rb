@@ -37,7 +37,8 @@ Dataset.find_each do |datasetid|
 	Pattern.where(dataset_id: datasetid.id).each do | pattern|
 		# users[pattern.user_id][datasetid.id] = pattern
 		# patterns[datasetid.id][pattern.last_saved] = pattern
-		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][pattern.last_saved] = 1
+		term = [pattern.last_saved, datasetid.id].join("_")
+		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][term] = pattern
 		if pattern.cigar_files == ""
 			if useralns.has_key?(pattern.user_id) == true
 				useralns[pattern.user_id] += 1
@@ -50,6 +51,7 @@ end
 
 
 print "UserId\tNoofDays\tTotalTasks\tMeanTaskperDay\tEmptyTasks\tFBScore\tFBBonus\tFBID\n"
+
 User.find_each do |eachuser|
 	userid = eachuser.id
 	if userstat.has_key?(userid) == true
@@ -59,13 +61,25 @@ User.find_each do |eachuser|
 			tasks.push(userstat[userid][day].length)
 		}
 		average = tasks.sum/tasks.size
-		print "#{userid}\t#{days_no}\t#{tasks.sum}\t#{average.to_f}\t#{useralns[userid]}"
+		empty = 0
+		if useralns.has_key?(userid) == true
+			empty = useralns[userid]
+		end
+		print "#{userid}\t#{days_no}\t#{tasks.sum}\t#{average.to_f}\t#{empty}\t"
+		userstat.delete(userid)
 	else
 		print "#{userid}\t0\t0\t0\t0\t"
 	end
 	print "#{eachuser.score}\t#{eachuser.bonus_points}\t#{eachuser.fbid}\n"
 end
 
+userstat.each_key { |id|
+	userstat[id].each_key { |day|
+		userstat[id][day].each_key { |pattern|
+			print "#{userstat[id][day][pattern]}\n"
+		}
+	}
+}
 
 =begin
 	
