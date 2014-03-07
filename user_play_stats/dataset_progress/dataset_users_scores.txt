@@ -1,4 +1,4 @@
-Datsetid	Players_total	Players_active	No.ofalignments	Empty_alignments	Maxscoreperread	Readnumber
+Datsetid	Players_total	Players_active	No.ofalignments	Notempty_alignments	Maxscoreperread	Readnumber
 2	9	9	9	9	40.65	20
 3	12	10	12	10	75.15	20
 4	19	14	19	14	81.0	20
