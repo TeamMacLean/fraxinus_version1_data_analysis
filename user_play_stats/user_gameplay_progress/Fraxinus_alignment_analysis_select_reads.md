@@ -37,7 +37,7 @@ players have accesssed Fraxinus
 
 
 ```r
-ggplot(data = user_data, aes(NoofDays)) + geom_histogram(binwidth = 1) + scale_y_sqrt() + 
+ggplot(data = user_data, aes(NoofDays)) + geom_histogram(binwidth = 5) + scale_y_sqrt() + 
     ggtitle("Distribution of no. of active days from all players")
 ```
 
@@ -49,7 +49,7 @@ ggplot(data = user_data, aes(NoofDays)) + geom_histogram(binwidth = 1) + scale_y
 
 
 ```r
-ggplot(data = user_data, aes(TotalTasks)) + geom_histogram(binwidth = 10) + 
+ggplot(data = user_data, aes(TotalTasks)) + geom_histogram(binwidth = 20) + 
     scale_y_sqrt() + ggtitle("Distribution of no. of alignment tasks from all players")
 ```
 
@@ -61,7 +61,7 @@ ggplot(data = user_data, aes(TotalTasks)) + geom_histogram(binwidth = 10) +
 
 
 ```r
-ggplot(data = user_data, aes(TotalTasks/NoofDays)) + geom_histogram(binwidth = 10) + 
+ggplot(data = user_data, aes(TotalTasks/NoofDays)) + geom_histogram(binwidth = 5) + 
     scale_y_sqrt() + ggtitle("Distribution of mean no. of alignment tasks per day from all players")
 ```
 
@@ -73,7 +73,7 @@ ggplot(data = user_data, aes(TotalTasks/NoofDays)) + geom_histogram(binwidth = 1
 
 
 ```r
-ggplot(data = user_data, aes(FBScore)) + geom_histogram(binwidth = 10) + scale_y_sqrt() + 
+ggplot(data = user_data, aes(FBScore)) + geom_histogram(binwidth = 20) + scale_y_sqrt() + 
     ggtitle("Facebook scores from all players")
 ```
 

@@ -243,7 +243,7 @@ hljs.initHighlightingOnLoad();
 
 <h3>Distribution of number of active days from all players:</h3>
 
-<pre><code class="r">ggplot(data = user_data, aes(NoofDays)) + geom_histogram(binwidth = 1) + scale_y_sqrt() + 
+<pre><code class="r">ggplot(data = user_data, aes(NoofDays)) + geom_histogram(binwidth = 5) + scale_y_sqrt() + 
     ggtitle(&quot;Distribution of no. of active days from all players&quot;)
 </code></pre>
 
@@ -251,7 +251,7 @@ hljs.initHighlightingOnLoad();
 
 <h3>Distribution of number of alignment task from all palyers:</h3>
 
-<pre><code class="r">ggplot(data = user_data, aes(TotalTasks)) + geom_histogram(binwidth = 10) + 
+<pre><code class="r">ggplot(data = user_data, aes(TotalTasks)) + geom_histogram(binwidth = 20) + 
     scale_y_sqrt() + ggtitle(&quot;Distribution of no. of alignment tasks from all players&quot;)
 </code></pre>
 
@@ -259,7 +259,7 @@ hljs.initHighlightingOnLoad();
 
 <h3>Distribution of mean number of alignment task per day from all palyers:</h3>
 
-<pre><code class="r">ggplot(data = user_data, aes(TotalTasks/NoofDays)) + geom_histogram(binwidth = 10) + 
+<pre><code class="r">ggplot(data = user_data, aes(TotalTasks/NoofDays)) + geom_histogram(binwidth = 5) + 
     scale_y_sqrt() + ggtitle(&quot;Distribution of mean no. of alignment tasks per day from all players&quot;)
 </code></pre>
 
@@ -267,7 +267,7 @@ hljs.initHighlightingOnLoad();
 
 <h3>Distribution of facebook scores from all players:</h3>
 
-<pre><code class="r">ggplot(data = user_data, aes(FBScore)) + geom_histogram(binwidth = 10) + scale_y_sqrt() + 
+<pre><code class="r">ggplot(data = user_data, aes(FBScore)) + geom_histogram(binwidth = 20) + scale_y_sqrt() + 
     ggtitle(&quot;Facebook scores from all players&quot;)
 </code></pre>
 
