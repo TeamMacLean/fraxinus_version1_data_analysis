@@ -21,6 +21,7 @@ end
 #patterns = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 userstat = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 useralns = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+countpatt = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 
 ## dataset table
 ##	id	sam_file	base_pattern	active	pos	bam_filename
@@ -37,8 +38,9 @@ Dataset.find_each do |datasetid|
 	Pattern.where(dataset_id: datasetid.id).each do | pattern|
 		# users[pattern.user_id][datasetid.id] = pattern
 		# patterns[datasetid.id][pattern.last_saved] = pattern
-		term = [pattern.last_saved, datasetid.id].join("_")
-		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][term] = pattern
+		
+		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][pattern.id] = 1
+		countpatt[pattern.id] = pattern
 		if pattern.cigar_files == ""
 			if useralns.has_key?(pattern.user_id) == true
 				useralns[pattern.user_id] += 1
@@ -59,6 +61,9 @@ User.find_each do |eachuser|
 		tasks = []
 		userstat[userid].each_key { |day|
 			tasks.push(userstat[userid][day].length)
+			userstat[userid][day].each_key { |pattid|
+				countpatt.delete(pattid)
+			}
 		}
 		average = tasks.sum/tasks.size
 		empty = 0
@@ -66,19 +71,14 @@ User.find_each do |eachuser|
 			empty = useralns[userid]
 		end
 		print "#{userid}\t#{days_no}\t#{tasks.sum}\t#{average.to_f}\t#{empty}\t"
-		userstat.delete(userid)
 	else
 		print "#{userid}\t0\t0\t0\t0\t"
 	end
 	print "#{eachuser.score}\t#{eachuser.bonus_points}\t#{eachuser.fbid}\n"
 end
 
-userstat.each_key { |id|
-	userstat[id].each_key { |day|
-		userstat[id][day].each_key { |pattern|
-			print "#{userstat[id][day][pattern]}\n"
-		}
-	}
+countpatt.each_key { |id|
+	print "#{countpatt[id]}\n"
 }
 
 =begin
