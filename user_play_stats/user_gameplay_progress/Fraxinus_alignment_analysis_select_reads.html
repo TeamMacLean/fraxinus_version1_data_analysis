@@ -305,17 +305,20 @@ ggplot(data = user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() +
 
 <h3>Cumulative distribution of visitor days:</h3>
 
-<pre><code class="r">user_data$NoofDays[user_data$NoofDays == 0] &lt;- 1
-days &lt;- user_data$NoofDays
-breaks &lt;- seq(0, 20, by = 1)
+<pre><code class="r">days &lt;- user_data$NoofDays
+breaks &lt;- seq(-1, 19, by = 1)
 dayscut &lt;- cut(days, breaks, right = FALSE)
 daysfreq &lt;- table(dayscut)
 days.freq &lt;- cbind(daysfreq)
 dayspercentfreq &lt;- days.freq
 dayspercentfreq[1:20] &lt;- (days.freq[1:20] * 100)/nrow(user_data)
-cumfreq &lt;- data.frame(CumulativeUsers = cumsum(dayspercentfreq), NoofDays = seq(0, 
-    19, by = 1))
-ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle(&quot;Cumulative User distribution - active days&quot;)
+cumfreq &lt;- data.frame(CumulativeUsers = cumsum(dayspercentfreq), NoofDays = seq(-1, 
+    18, by = 1))
+ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + xlim(0, 
+    20) + ggtitle(&quot;Cumulative User distribution - active days&quot;)
+</code></pre>
+
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).
 </code></pre>
 
 <p><img src="figure/unnamed-chunk-8.pdf" alt="plot of chunk unnamed-chunk-8"/> </p>
@@ -360,7 +363,7 @@ ggplot(data = cumfreq, aes(NoofTasks, CumulativeUsers)) + geom_point() + xlim(0,
 
 <p>percent of the players and these player have provided</p>
 
-<h2>31.5336</h2>
+<h2>31.3202</h2>
 
 <p>percent of the aligment solutions provided by all players</p>
 

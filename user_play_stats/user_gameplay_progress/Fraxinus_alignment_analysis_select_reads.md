@@ -128,17 +128,21 @@ ggplot(data = user_data, aes(Rank, FBScore)) + geom_point() + scale_x_log10() +
 
 
 ```r
-user_data$NoofDays[user_data$NoofDays == 0] <- 1
 days <- user_data$NoofDays
-breaks <- seq(0, 20, by = 1)
+breaks <- seq(-1, 19, by = 1)
 dayscut <- cut(days, breaks, right = FALSE)
 daysfreq <- table(dayscut)
 days.freq <- cbind(daysfreq)
 dayspercentfreq <- days.freq
 dayspercentfreq[1:20] <- (days.freq[1:20] * 100)/nrow(user_data)
-cumfreq <- data.frame(CumulativeUsers = cumsum(dayspercentfreq), NoofDays = seq(0, 
-    19, by = 1))
-ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + ggtitle("Cumulative User distribution - active days")
+cumfreq <- data.frame(CumulativeUsers = cumsum(dayspercentfreq), NoofDays = seq(-1, 
+    18, by = 1))
+ggplot(data = cumfreq, aes(NoofDays, CumulativeUsers)) + geom_point() + xlim(0, 
+    20) + ggtitle("Cumulative User distribution - active days")
+```
+
+```
+## Warning: Removed 1 rows containing missing values (geom_point).
 ```
 
 ![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.pdf) 
@@ -184,6 +188,6 @@ they account for
 ## 91.6767
 percent of the players and these player have provided
 
-## 31.5336
+## 31.3202
 percent of the aligment solutions provided by all players
 
