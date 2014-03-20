@@ -36,8 +36,8 @@ Dataset.find_each do |datasetid|
 	players = Pattern.where(dataset_id: datasetid.id).pluck(:user_id)
 	
 	Pattern.where(dataset_id: datasetid.id).each do | pattern|
-		# users[pattern.user_id][datasetid.id] = pattern
-		# patterns[datasetid.id][pattern.last_saved] = pattern
+		users[pattern.user_id][datasetid.id][pattern.id] = pattern
+		patterns[datasetid.id][pattern.id][pattern.last_saved] = pattern
 		
 		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][pattern.id] = 1
 		countpatt[pattern.id] = pattern
