@@ -9,4 +9,4 @@ resulting files were created as vcf format without sequence information at the b
 
 
 
-`uby pattern_longref_to_selected_vcf.rb --fasta Chalara_fraxinea_TGAC_s1v1_contigs.fa --vcf ../vcf_files_and_selected_list/ashwellthorpe_AT1_vs_tgac1_selected.vcf > ashwellthorpe_AT1_vs_tgac1_selected_200bp_ref.vcf`
+`ruby pattern_longref_to_selected_vcf.rb --fasta Chalara_fraxinea_TGAC_s1v1_contigs.fa --vcf ../vcf_files_and_selected_list/ashwellthorpe_AT1_vs_tgac1_selected.vcf > ashwellthorpe_AT1_vs_tgac1_selected_200bp_ref.vcf`
