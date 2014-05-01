@@ -63,7 +63,7 @@ Dir.glob("*.vcf") do |filename|
 					end
 					percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 
-					if percent2 > percent and (percent2 - percent) > 0.5
+					if percent2 > percent and (percent2 - percent) > 1
 #					if percent2 > percent
 						stats = [percent, match, mismatch, percent2, match2, mismatch2].join("\t")
 						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
