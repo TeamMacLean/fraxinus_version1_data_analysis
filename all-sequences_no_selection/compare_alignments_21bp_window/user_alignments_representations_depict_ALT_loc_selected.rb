@@ -37,7 +37,7 @@ Dir.glob("*.vcf") do |filename|
 					playerpos = data[16].to_i
 
 					if bwacigar != '*'
-						# now we know real puzzle position and long reference sequence
+						# now we have real variant position and long reference sequence around the 21bp pattern
 						correct_pos_in_play = info[5].to_i - 10
 						# 102074 - 10
 						difference = correct_pos_in_play - pos_in_play
@@ -51,7 +51,7 @@ Dir.glob("*.vcf") do |filename|
 						i = 0
 						if bwapos < pos_in_play
 							puzzlelen = 21
-							to_cut = pos_in_play - bwapos				
+							to_cut = pos_in_play - bwapos
 							if types[0] =~ /S/
 								to_cut += counts[0]
 							end
@@ -66,7 +66,7 @@ Dir.glob("*.vcf") do |filename|
 									if (to_cut.abs >= puzzlelen)
 										newcigar = [newcigar, puzzlelen, types[i]].join("")
 										puzzlelen = 0
-									else
+									elsif (to_cut.abs > 0)
 										newcigar = [newcigar, to_cut.abs, types[i]].join("")
 										puzzlelen -= to_cut.abs
 									end
@@ -81,7 +81,7 @@ Dir.glob("*.vcf") do |filename|
 									next
 								end
 								puzzlelen -= counts[i]
-								if puzzlelen < 0
+								if puzzlelen <= 0
 									newcigar = [newcigar, counts[i]+puzzlelen, types[i]].join("")
 								else
 									newcigar = [newcigar, counts[i], types[i]].join("")
@@ -89,7 +89,6 @@ Dir.glob("*.vcf") do |filename|
 								i += 1
 							end
 						elsif bwapos > pos_in_play
-							to_cut = 0
 							puzzlelen = 21 - (bwapos - pos_in_play)
 
 							while puzzlelen > 0 and i < types.length do
@@ -102,7 +101,7 @@ Dir.glob("*.vcf") do |filename|
 									next
 								end
 								puzzlelen -= counts[i]
-								if puzzlelen < 0
+								if puzzlelen <= 0
 									newcigar = [newcigar, counts[i]+puzzlelen, types[i]].join("")
 								else
 									newcigar = [newcigar, counts[i], types[i]].join("")
@@ -138,7 +137,7 @@ Dir.glob("*.vcf") do |filename|
 									if (to_cut.abs >= puzzlelen)
 										newplayercigar = [newplayercigar, puzzlelen, types2[i]].join("")
 										puzzlelen = 0
-									else
+									elsif (to_cut.abs > 0)
 										newplayercigar = [newplayercigar, to_cut.abs, types2[i]].join("")
 										puzzlelen -= to_cut.abs
 									end
@@ -161,7 +160,6 @@ Dir.glob("*.vcf") do |filename|
 								i += 1
 							end
 						elsif corrected_playerpos > pos_in_play
-							to_cut = 0
 							puzzlelen = 21 - (corrected_playerpos - pos_in_play)
 
 							while puzzlelen > 0 and i < types2.length do
@@ -174,7 +172,7 @@ Dir.glob("*.vcf") do |filename|
 									next
 								end
 								puzzlelen -= counts2[i]
-								if puzzlelen < 0
+								if puzzlelen <= 0
 									newplayercigar = [newplayercigar, counts2[i]+puzzlelen, types2[i]].join("")
 								else
 									newplayercigar = [newplayercigar, counts2[i], types2[i]].join("")
@@ -214,7 +212,7 @@ Dir.glob("*.vcf") do |filename|
 =begin
 	file = File.new("#{bamfilename}_player_alignments_selected.txt", "w")
 	variants.each_key { |key|
-		# if variants[key].length > 1 
+		# if variants[key].length > 1
 			file.print "#{key}\n"
 			useraln = []
 			variants[key].each_key { |puzzle|
