@@ -48,13 +48,14 @@ Dir.glob("*.vcf") do |filename|
 
 						types, counts = Cigar.alignchunks(bwacigar)
 						newcigar = ""
+						adjbwapos = bwapos
 						i = 0
-						if bwapos < correct_pos_in_play
+						if types[0] =~ /S/
+								adjbwapos -= counts[0]
+						end
+						if adjbwapos < correct_pos_in_play
 							puzzlelen = 21
-							to_cut = correct_pos_in_play - bwapos
-							if types[0] =~ /S/
-								to_cut += counts[0]
-							end
+							to_cut = correct_pos_in_play - adjbwapos
 							while to_cut > 0 and i < types.length do
 								if types[i] =~ /I/
 									i += 1
@@ -88,8 +89,8 @@ Dir.glob("*.vcf") do |filename|
 								i += 1
 							end
 
-						elsif bwapos >= correct_pos_in_play
-							puzzlelen = 21 - (bwapos - correct_pos_in_play)
+						elsif adjbwapos >= correct_pos_in_play
+							puzzlelen = 21 - (adjbwapos - correct_pos_in_play)
 							while puzzlelen > 0 and i < types.length do
 								if types[i] =~ /S/
 									i += 1
@@ -192,7 +193,7 @@ Dir.glob("*.vcf") do |filename|
 						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
 						playeralign = Cigar.aligner(types2, counts2, info[0], initial_gap2, readseq)
 
-						print "#{bwaalign}\n#{playeralign}\n"
+						print "\n#{bwaalign}\n#{playeralign}\n"
 
 						percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 
