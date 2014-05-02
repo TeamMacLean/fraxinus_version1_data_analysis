@@ -26,7 +26,7 @@ Dir.glob("*.vcf") do |filename|
 			puzzleid = [info[4], info[3]].join("_")
 			if puzzles[bamfilename.to_s].key?(puzzleid.to_s) == true
 				puzzles[bamfilename.to_s][puzzleid.to_s].each_key { |key|
-					print "#{info[4]}\t#{info[3]}\t#{info[5]}\t#{key}\t"
+					print "#{info[4]}\t#{info[3]}\t#{info[5]}\t#{key}"
 
 					data = key.split("\t")
 					pos_in_play = data[2].to_i
@@ -49,9 +49,9 @@ Dir.glob("*.vcf") do |filename|
 						types, counts = Cigar.alignchunks(bwacigar)
 						newcigar = ""
 						i = 0
-						if bwapos < pos_in_play
+						if bwapos < correct_pos_in_play
 							puzzlelen = 21
-							to_cut = pos_in_play - bwapos
+							to_cut = correct_pos_in_play - bwapos
 							if types[0] =~ /S/
 								to_cut += counts[0]
 							end
@@ -88,11 +88,11 @@ Dir.glob("*.vcf") do |filename|
 								end
 								i += 1
 							end
-						elsif bwapos > pos_in_play
-							puzzlelen = 21 - (bwapos - pos_in_play)
 
+						elsif bwapos >= correct_pos_in_play
+							puzzlelen = 21 - (bwapos - correct_pos_in_play)
 							while puzzlelen > 0 and i < types.length do
-								if types[0] =~ /S/
+								if types[i] =~ /S/
 									i += 1
 									next
 								elsif types[i] =~ /I/
@@ -123,9 +123,9 @@ Dir.glob("*.vcf") do |filename|
 						types2, counts2 = Cigar.alignchunks(playercigar)
 						newplayercigar = ""
 						i = 0
-						if corrected_playerpos < pos_in_play
+						if corrected_playerpos < correct_pos_in_play
 							puzzlelen = 21
-							to_cut = pos_in_play - corrected_playerpos
+							to_cut = correct_pos_in_play - corrected_playerpos
 							while to_cut > 0 and i < types2.length do
 								if types2[i] =~ /I/
 									to_cut += counts2[i]
@@ -159,11 +159,11 @@ Dir.glob("*.vcf") do |filename|
 								end
 								i += 1
 							end
-						elsif corrected_playerpos > pos_in_play
-							puzzlelen = 21 - (corrected_playerpos - pos_in_play)
+						elsif corrected_playerpos >= correct_pos_in_play
+							puzzlelen = 21 - (corrected_playerpos - correct_pos_in_play)
 
 							while puzzlelen > 0 and i < types2.length do
-								if types2[0] =~ /S/
+								if types2[i] =~ /S/
 									i += 1
 									next
 								elsif types2[i] =~ /I/
@@ -181,8 +181,8 @@ Dir.glob("*.vcf") do |filename|
 							end
 
 						end
-
-						print "#{newcigar}\t#{newplayercigar}\n"
+						
+						print "\t#{newcigar}\t#{newplayercigar}"
 
 =begin
 						initial_gap2 = corrected_playerpos - longref_startpos
@@ -190,6 +190,12 @@ Dir.glob("*.vcf") do |filename|
 						if types2[0] =~ /S/
 							adjusted2 = adjusted2 + counts2[0].to_i # Fraxinus cigar treats alingment position begining of a read even for soft clipping (take care about this)
 						end
+
+						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
+						playeralign = Cigar.aligner(types2, counts2, info[0], initial_gap2, readseq)
+
+						print "#{bwaalign}\n#{playeralign}\n"
+
 						percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 
 						if percent2 > percent and (percent2 - percent) > 1
@@ -203,7 +209,10 @@ Dir.glob("*.vcf") do |filename|
 						end
 =end
 
+					else
+						print "\t*\t*"
 					end
+					print "\n"
 				}
 			end
 		end
