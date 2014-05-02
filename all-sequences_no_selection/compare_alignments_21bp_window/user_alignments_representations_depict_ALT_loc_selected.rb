@@ -57,7 +57,6 @@ Dir.glob("*.vcf") do |filename|
 							end
 							while to_cut > 0 and i < types.length do
 								if types[i] =~ /I/
-									to_cut += counts[i]
 									i += 1
 									next
 								end
@@ -128,7 +127,6 @@ Dir.glob("*.vcf") do |filename|
 							to_cut = correct_pos_in_play - corrected_playerpos
 							while to_cut > 0 and i < types2.length do
 								if types2[i] =~ /I/
-									to_cut += counts2[i]
 									i += 1
 									next
 								end
