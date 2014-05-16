@@ -32,6 +32,13 @@ There are
 ## 10087 
 patterns presented in version 1 of Fraxinus
 
+There are 
+## 154038 
+alingnment solutions prvoided by players
+
+There are 
+## 118117 
+usable alingnment solutions prvoided by players
 
 ### Distribution of players visiting each puzzle:
 

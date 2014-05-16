@@ -37,6 +37,13 @@ There are
 ## `r nrow(user_data)` 
 patterns presented in version 1 of Fraxinus
 
+There are 
+## `r sum(user_data$No.ofalignments)` 
+alingnment solutions prvoided by players
+
+There are 
+## `r sum(user_data$Notempty_alignments)` 
+usable alingnment solutions prvoided by players
 
 ### Distribution of players visiting each puzzle:
 
