@@ -88,7 +88,7 @@ Dir.glob("*.vcf") do |filename|
 						end
 =end
 					else
-						print "\t*\t-"
+						print "\t*\t*"
 					end
 					print "\n"
 				}
