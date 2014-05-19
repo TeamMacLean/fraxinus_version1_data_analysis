@@ -117,6 +117,67 @@ class Cigar
 			return alignment
 		end
 
+		def newcigars(cigar, pattern_positon, align_position)
+			types, counts = alignchunks(cigar)
+			newcigar = ""
+			i = 0
+			if align_position < pattern_positon
+				puzzlelen = 21
+				to_cut = pattern_positon - align_position
+				while to_cut > 0 and i < types.length do
+					if types[i] =~ /I/
+						i += 1
+						next
+					end
+					to_cut -= counts[i]
+					if to_cut <= 0
+						if (to_cut.abs >= puzzlelen)
+							newcigar = [newcigar, puzzlelen, types[i]].join("")
+							puzzlelen = 0
+						elsif (to_cut.abs > 0)
+							newcigar = [newcigar, to_cut.abs, types[i]].join("")
+							puzzlelen -= to_cut.abs
+						end
+					end
+					i += 1
+				end
+				while puzzlelen > 0 and i < types.length do
+					if types[i] =~ /I/
+						newcigar = [newcigar, counts[i], types[i]].join("")
+						i += 1
+						next
+					end
+					puzzlelen -= counts[i]
+					if puzzlelen <= 0
+						newcigar = [newcigar, counts[i]+puzzlelen, types[i]].join("")
+					else
+						newcigar = [newcigar, counts[i], types[i]].join("")
+					end
+					i += 1
+				end
+			elsif align_position >= pattern_positon
+				puzzlelen = 21 - (align_position - pattern_positon)
+				while puzzlelen > 0 and i < types.length do
+					if types[i] =~ /S/
+						i += 1
+						next
+					elsif types[i] =~ /I/
+						newcigar = [newcigar, counts[i], types[i]].join("")
+						i += 1
+						next
+					end
+					puzzlelen -= counts[i]
+					if puzzlelen <= 0
+						newcigar = [newcigar, counts[i]+puzzlelen, types[i]].join("")
+					else
+						newcigar = [newcigar, counts[i], types[i]].join("")
+					end
+					i += 1
+				end
+			end
+			return newcigar
+		end
+
 	end
 end
 

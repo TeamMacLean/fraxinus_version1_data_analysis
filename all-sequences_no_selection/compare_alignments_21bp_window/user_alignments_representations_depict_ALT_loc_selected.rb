@@ -47,70 +47,11 @@ Dir.glob("*.vcf") do |filename|
 						longref_startpos = info[1].to_i
 
 						types, counts = Cigar.alignchunks(bwacigar)
-						newcigar = ""
 						adjbwapos = bwapos
-						i = 0
 						if types[0] =~ /S/
 								adjbwapos -= counts[0]
 						end
-						if adjbwapos < correct_pos_in_play
-							puzzlelen = 21
-							to_cut = correct_pos_in_play - adjbwapos
-							while to_cut > 0 and i < types.length do
-								if types[i] =~ /I/
-									i += 1
-									next
-								end
-								to_cut -= counts[i]
-								if to_cut <= 0
-									if (to_cut.abs >= puzzlelen)
-										newcigar = [newcigar, puzzlelen, types[i]].join("")
-										puzzlelen = 0
-									elsif (to_cut.abs > 0)
-										newcigar = [newcigar, to_cut.abs, types[i]].join("")
-										puzzlelen -= to_cut.abs
-									end
-								end
-								i += 1
-							end
-
-							while puzzlelen > 0 and i < types.length do
-								if types[i] =~ /I/
-									newcigar = [newcigar, counts[i], types[i]].join("")
-									i += 1
-									next
-								end
-								puzzlelen -= counts[i]
-								if puzzlelen <= 0
-									newcigar = [newcigar, counts[i]+puzzlelen, types[i]].join("")
-								else
-									newcigar = [newcigar, counts[i], types[i]].join("")
-								end
-								i += 1
-							end
-
-						elsif adjbwapos >= correct_pos_in_play
-							puzzlelen = 21 - (adjbwapos - correct_pos_in_play)
-							while puzzlelen > 0 and i < types.length do
-								if types[i] =~ /S/
-									i += 1
-									next
-								elsif types[i] =~ /I/
-									newcigar = [newcigar, counts[i], types[i]].join("")
-									i += 1
-									next
-								end
-								puzzlelen -= counts[i]
-								if puzzlelen <= 0
-									newcigar = [newcigar, counts[i]+puzzlelen, types[i]].join("")
-								else
-									newcigar = [newcigar, counts[i], types[i]].join("")
-								end
-								i += 1
-							end
-
-						end
-
+						newbwacigar = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
 =begin
 						initial_gap = bwapos.to_i - longref_startpos
 						adjusted = initial_gap
@@ -119,70 +60,9 @@ Dir.glob("*.vcf") do |filename|
 						end
 						percent, match, mismatch = Cigar.percent_identity(bwacigar, info[0].upcase, initial_gap, readseq)
 =end
-
 						types2, counts2 = Cigar.alignchunks(playercigar)
-						newplayercigar = ""
-						i = 0
-						if corrected_playerpos < correct_pos_in_play
-							puzzlelen = 21
-							to_cut = correct_pos_in_play - corrected_playerpos
-							while to_cut > 0 and i < types2.length do
-								if types2[i] =~ /I/
-									i += 1
-									next
-								end
-								to_cut -= counts2[i]
-								if to_cut <= 0
-									if (to_cut.abs >= puzzlelen)
-										newplayercigar = [newplayercigar, puzzlelen, types2[i]].join("")
-										puzzlelen = 0
-									elsif (to_cut.abs > 0)
-										newplayercigar = [newplayercigar, to_cut.abs, types2[i]].join("")
-										puzzlelen -= to_cut.abs
-									end
-								end
-								i += 1
-							end
-
-							while puzzlelen > 0 and i < types2.length do
-								if types2[i] =~ /I/
-									newplayercigar = [newplayercigar, counts2[i], types2[i]].join("")
-									i += 1
-									next
-								end
-								puzzlelen -= counts2[i]
-								if puzzlelen < 0
-									newplayercigar = [newplayercigar, counts2[i]+puzzlelen, types2[i]].join("")
-								else
-									newplayercigar = [newplayercigar, counts2[i], types2[i]].join("")
-								end
-								i += 1
-							end
-						elsif corrected_playerpos >= correct_pos_in_play
-							puzzlelen = 21 - (corrected_playerpos - correct_pos_in_play)
-
-							while puzzlelen > 0 and i < types2.length do
-								if types2[i] =~ /S/
-									i += 1
-									next
-								elsif types2[i] =~ /I/
-									newplayercigar = [newplayercigar, counts2[i], types2[i]].join("")
-									i += 1
-									next
-								end
-								puzzlelen -= counts2[i]
-								if puzzlelen <= 0
-									newplayercigar = [newplayercigar, counts2[i]+puzzlelen, types2[i]].join("")
-								else
-									newplayercigar = [newplayercigar, counts2[i], types2[i]].join("")
-								end
-								i += 1
-							end
-
-						end
-						
-						print "\t#{newcigar}\t#{newplayercigar}"
-
+						newplayercigar = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
+						print "\t#{newbwacigar}\t#{newplayercigar}"
 =begin
 						initial_gap2 = corrected_playerpos - longref_startpos
 						adjusted2 = initial_gap2
@@ -207,16 +87,14 @@ Dir.glob("*.vcf") do |filename|
 							variants[keyid][key][stats] = alignments
 						end
 =end
-
 					else
-						print "\t*\t*"
+						print "\t*\t-"
 					end
 					print "\n"
 				}
 			end
 		end
 	end
-
 =begin
 	file = File.new("#{bamfilename}_player_alignments_selected.txt", "w")
 	variants.each_key { |key|
@@ -256,5 +134,4 @@ end
 	bwacigar = data[17]
 	playercigar = data[18]
 	playerpos = data[19]
-
 =end
