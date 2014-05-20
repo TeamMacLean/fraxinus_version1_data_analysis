@@ -6,7 +6,7 @@ Background
 Each Fraxinus player user access stats are printed such as number of days they are active and number pattern alignments they have attempted during the period
 
 Resulting file has following header  
-* `"Datsetid"   "Players_total"  "Players_active"  "No.ofalignments"    "Notempty_alignments"   "Maxscoreperread"   "Readnumber"`  
+* `"Datsetid" "Players_total" "No.ofalignments" "Players_active" "Usable_alignments" "Empty_alignments"   "Maxscoreperread"   "Readnumber"`  
 
 Meaning of the terms used in the headers mentioned above:
 
@@ -14,11 +14,12 @@ Meaning of the terms used in the headers mentioned above:
 |:------------------- |:----------------------------------------------------------- |
 | Datsetid            | Pattern Id |
 | Players_total       |	Number of palyers accessed this pattern |
-| Players_active      |	Number of palyers accessed this pattern gave an alignment |
 | No.ofalignments     |	Total alignments registerd |
-| Notempty_alignments |	Usable alignments that are not empty | 
-| Maxscoreperread     | Highest score achieved divided by read number | 
-| Readnumber          | No of reads in the pattern | 
+| Players_active      | Number of palyers accessed this pattern gave an alignment |
+| Usable_alignments   | Usable alignments that are not empty |
+| Empty_alignments    |	Alignments that are not empty |
+| Maxscoreperread     | Highest score achieved divided by read number |
+| Readnumber          | No of reads in the pattern |
 
 Analysis
 --------------------------------------------------------
@@ -46,27 +47,12 @@ usable alingnment solutions prvoided by players
 ```r
 plot1 <- ggplot(data = user_data, aes(Players_total)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle("Distribution of no. of players each puzzle")
-plot2 <- ggplot(data = user_data, aes(Players_total)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle("Distribution of no. of players each puzzle")
+plot2 <- ggplot(data = user_data, aes(Players_total)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle("Distribution of no. of players each puzzle")
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 ```
 
 ![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1.pdf) 
-
-
-
-### Distribution of active players visiting each puzzle:
-
-
-```r
-plot1 <- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + ggtitle("Distribution of no. of active players each puzzle")
-plot2 <- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle("Distribution of no. of active players each puzzle")
-grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
-```
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.pdf) 
 
 
 
@@ -76,8 +62,23 @@ grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 ```r
 plot1 <- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle("Distribution of number of alignment per each puzzle")
-plot2 <- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle("Distribution of number of alignment per each puzzle")
+plot2 <- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle("Distribution of number of alignment per each puzzle")
+grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.pdf) 
+
+
+
+### Distribution of active players visiting each puzzle:
+
+
+```r
+plot1 <- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 2) + 
+    scale_y_sqrt() + ggtitle("Distribution of no. of active players each puzzle")
+plot2 <- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle("Distribution of no. of active players each puzzle")
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 ```
 
@@ -89,10 +90,10 @@ grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 
 
 ```r
-plot1 <- ggplot(data = user_data, aes(Notempty_alignments)) + geom_histogram(binwidth = 2) + 
+plot1 <- ggplot(data = user_data, aes(Usable_alignments)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle("Distribution of number of usable alignment per each puzzle")
-plot2 <- ggplot(data = user_data, aes(Notempty_alignments)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle("Distribution of number of usable alignment per each puzzle")
+plot2 <- ggplot(data = user_data, aes(Usable_alignments)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle("Distribution of number of usable alignment per each puzzle")
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 ```
 
@@ -105,11 +106,10 @@ grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 
 
 ```r
-user_data$Empty <- user_data$No.ofalignments - user_data$Notempty_alignments
-plot1 <- ggplot(data = user_data, aes(Empty)) + geom_histogram(binwidth = 2) + 
+plot1 <- ggplot(data = user_data, aes(Empty_alignments)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle("Distribution of number of empty alignment per each puzzle")
-plot2 <- ggplot(data = user_data, aes(Empty)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle("Distribution of number of empty alignment per each puzzle")
+plot2 <- ggplot(data = user_data, aes(Empty_alignments)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle("Distribution of number of empty alignment per each puzzle")
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 ```
 

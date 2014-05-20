@@ -12,15 +12,33 @@ require './fraxinus_calcs.rb'
 ### Extract read info from the sam file of reads covering the variant region
 sam_select_read = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 Dir.glob("*-selected.sam") do |samfile|
-	bamfile = samfile.gsub("-selected.sam","")
+	bamfile1 = samfile.gsub("-selected.sam","")
 	sam = File.read(samfile)
 	sam.split("\n").each do |entry|
 		info = entry.split("\t")
 		term = [info[0], info[1], info[3]].join("_")
-		sam_select_read[bamfile][term] = entry
+		sam_select_read[bamfile1][term] = entry
 	end
 end
 print "\n"
+
+variants = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+Dir.glob("*.vcf") do |vcffile|
+	bamfile2 = vcffile.gsub("\.vcf", "")
+	sam = File.read(vcffile)
+	sam.split("\n").each do |entry|
+		if entry !~ /^\#/
+			info = entry.split("\t")
+			puzzleid = [info[4], info[3]].join("_")
+			if info[11] =~ /^INDEL/
+				variants[:indel][bamfile2] = puzzleid
+			else
+				variants[:snp][bamfile2] = puzzleid
+			end
+		end
+	end
+end
+
 
 toplist = File.new("User_different_alignments.txt", "w")
 toplist.puts "Reference\tPattern\tposition\tbamfile\tID\tHighScore\tNoOfUsersWithHighScore\t\

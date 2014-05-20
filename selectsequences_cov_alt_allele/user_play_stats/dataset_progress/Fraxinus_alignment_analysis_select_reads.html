@@ -188,7 +188,7 @@ hljs.initHighlightingOnLoad();
 <p>Resulting file has following header  </p>
 
 <ul>
-<li><code>&quot;Datsetid&quot;   &quot;Players_total&quot;  &quot;Players_active&quot;  &quot;No.ofalignments&quot;    &quot;Notempty_alignments&quot;   &quot;Maxscoreperread&quot;   &quot;Readnumber&quot;</code><br/></li>
+<li><code>&quot;Datsetid&quot; &quot;Players_total&quot; &quot;No.ofalignments&quot; &quot;Players_active&quot; &quot;Usable_alignments&quot; &quot;Empty_alignments&quot;   &quot;Maxscoreperread&quot;   &quot;Readnumber&quot;</code><br/></li>
 </ul>
 
 <p>Meaning of the terms used in the headers mentioned above:</p>
@@ -208,16 +208,20 @@ hljs.initHighlightingOnLoad();
 <td align="left">Number of palyers accessed this pattern</td>
 </tr>
 <tr>
-<td align="left">Players_active</td>
-<td align="left">Number of palyers accessed this pattern gave an alignment</td>
-</tr>
-<tr>
 <td align="left">No.ofalignments</td>
 <td align="left">Total alignments registerd</td>
 </tr>
 <tr>
-<td align="left">Notempty_alignments</td>
+<td align="left">Players_active</td>
+<td align="left">Number of palyers accessed this pattern gave an alignment</td>
+</tr>
+<tr>
+<td align="left">Usable_alignments</td>
 <td align="left">Usable alignments that are not empty</td>
+</tr>
+<tr>
+<td align="left">Empty_alignments</td>
+<td align="left">Alignments that are not empty</td>
 </tr>
 <tr>
 <td align="left">Maxscoreperread</td>
@@ -257,30 +261,30 @@ hljs.initHighlightingOnLoad();
 
 <pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(Players_total)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle(&quot;Distribution of no. of players each puzzle&quot;)
-plot2 &lt;- ggplot(data = user_data, aes(Players_total)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle(&quot;Distribution of no. of players each puzzle&quot;)
+plot2 &lt;- ggplot(data = user_data, aes(Players_total)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle(&quot;Distribution of no. of players each puzzle&quot;)
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 </code></pre>
 
 <p><img src="figure/unnamed-chunk-1.pdf" alt="plot of chunk unnamed-chunk-1"/> </p>
 
-<h3>Distribution of active players visiting each puzzle:</h3>
+<h3>Distribution of number of alignment per each puzzle:</h3>
 
-<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + ggtitle(&quot;Distribution of no. of active players each puzzle&quot;)
-plot2 &lt;- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle(&quot;Distribution of no. of active players each puzzle&quot;)
+<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 2) + 
+    scale_y_sqrt() + ggtitle(&quot;Distribution of number of alignment per each puzzle&quot;)
+plot2 &lt;- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle(&quot;Distribution of number of alignment per each puzzle&quot;)
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 </code></pre>
 
 <p><img src="figure/unnamed-chunk-2.pdf" alt="plot of chunk unnamed-chunk-2"/> </p>
 
-<h3>Distribution of number of alignment per each puzzle:</h3>
+<h3>Distribution of active players visiting each puzzle:</h3>
 
-<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + ggtitle(&quot;Distribution of number of alignment per each puzzle&quot;)
-plot2 &lt;- ggplot(data = user_data, aes(No.ofalignments)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle(&quot;Distribution of number of alignment per each puzzle&quot;)
+<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 2) + 
+    scale_y_sqrt() + ggtitle(&quot;Distribution of no. of active players each puzzle&quot;)
+plot2 &lt;- ggplot(data = user_data, aes(Players_active)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle(&quot;Distribution of no. of active players each puzzle&quot;)
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 </code></pre>
 
@@ -288,10 +292,10 @@ grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 
 <h3>Distribution of number of usable alignment per each puzzle:</h3>
 
-<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(Notempty_alignments)) + geom_histogram(binwidth = 2) + 
+<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(Usable_alignments)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle(&quot;Distribution of number of usable alignment per each puzzle&quot;)
-plot2 &lt;- ggplot(data = user_data, aes(Notempty_alignments)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle(&quot;Distribution of number of usable alignment per each puzzle&quot;)
+plot2 &lt;- ggplot(data = user_data, aes(Usable_alignments)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle(&quot;Distribution of number of usable alignment per each puzzle&quot;)
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 </code></pre>
 
@@ -299,11 +303,10 @@ grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 
 <h3>Distribution of number of empty alignment per each puzzle:</h3>
 
-<pre><code class="r">user_data$Empty &lt;- user_data$No.ofalignments - user_data$Notempty_alignments
-plot1 &lt;- ggplot(data = user_data, aes(Empty)) + geom_histogram(binwidth = 2) + 
+<pre><code class="r">plot1 &lt;- ggplot(data = user_data, aes(Empty_alignments)) + geom_histogram(binwidth = 2) + 
     scale_y_sqrt() + ggtitle(&quot;Distribution of number of empty alignment per each puzzle&quot;)
-plot2 &lt;- ggplot(data = user_data, aes(Empty)) + geom_histogram(binwidth = 2) + 
-    scale_y_sqrt() + xlim(0, 50) + ggtitle(&quot;Distribution of number of empty alignment per each puzzle&quot;)
+plot2 &lt;- ggplot(data = user_data, aes(Empty_alignments)) + geom_histogram(binwidth = 1) + 
+    scale_y_sqrt() + xlim(0, 30) + ggtitle(&quot;Distribution of number of empty alignment per each puzzle&quot;)
 grid.arrange(plot1, plot2, widths = c(2, 1), ncol = 2)
 </code></pre>
 
