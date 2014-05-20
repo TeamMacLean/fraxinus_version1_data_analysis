@@ -28,26 +28,26 @@ userstat = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 ## pattern table
 ##	id	user_id	dataset_id	score	cigar_files	last_saved	current_best	was_best	icon_id
 
-print "Datsetid\tPlayers_total\tPlayers_active\tNo.ofalignments\tEmpty_alignments\tMaxscoreperread\tReadnumber\n"
+print "Datsetid\tPlayers_total\tNo.ofalignments\tPlayers_active\tUsable_alignments\tEmpty_alignments\tMaxscoreperread\tReadnumber\n"
 
 Dataset.find_each do |datasetid|
 	inputreadcount = datasetid.sam_file.split("\n").length
 	scores = Pattern.where(dataset_id: datasetid.id).pluck(:score)
 	players = Pattern.where(dataset_id: datasetid.id).pluck(:user_id)
-	player_num = players.uniq
+	player_num = players.uniq.length
 	mean_max_score = scores.max.to_f/inputreadcount.to_f
 	datasets = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
-	empty_aln = 0
+	not_empty_aln = 0
 	Pattern.where(dataset_id: datasetid.id).each do | pattern|
 		users[pattern.user_id][datasetid.id] = pattern
 		patterns[datasetid.id][pattern.last_saved] = pattern
 		userstat[pattern.user_id][DateTime.parse(pattern.last_saved.to_s).strftime('%F')][datasetid.id] = 1
 		if pattern.cigar_files != "" 
 			datasets[pattern.user_id][pattern.score] = 1
-			empty_aln += 1
+			not_empty_aln += 1
 		end
 	end
-
+	empty_aln = scores.length.to_i - not_empty_aln
 	active_players = datasets.length
 
 =begin
@@ -58,7 +58,7 @@ Dataset.find_each do |datasetid|
 	}
 =end
 
-	print "#{datasetid.id}\t#{players.length}\t#{active_players}\t#{scores.length}\t#{empty_aln}\t#{mean_max_score.to_f}\t#{inputreadcount}\n"
+	print "#{datasetid.id}\t#{player_num}\t#{scores.length}\t#{active_players}\t#{not_empty_aln}\t#{empty_aln}\t#{mean_max_score.to_f}\t#{inputreadcount}\n"
 		
 end
 
