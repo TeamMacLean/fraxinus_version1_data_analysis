@@ -51,13 +51,16 @@ Dataset.find_each do |datasetid|
 	inputreadcount = datasetid.sam_file.split("\n").count.to_i 		     # total number of reads
 	samreads, allreadcount = Fraxinus.allreads(datasetid.sam_file)				       # hash of read ids in puzzle
 	selreads, selreadcount = Fraxinus.selectreads(datasetid.sam_file, samreads, sam_select_read, bamfilename)		 # reads covering ALT allele count
-	basepattern = datasetid.base_pattern.gsub("\n","_")
+	basepattern = datasetid.base_pattern.chop
+	basepattern = basepattern.gsub("\n","_")
 	basepattern = basepattern.gsub(">","")
 	patterns = 	Pattern.where(dataset_id: datasetid.id)
 	patterns.each do |pattern|
 		counter = Fraxinus.mm_allreads(pattern.cigar_files, samreads).to_i
 		selectcount = Fraxinus.mm_selreads(pattern.cigar_files, selreads).to_i
-		toplist.puts "#{datasetid.id}\t#{variants[bamfilename][basepattern]}\t#{pattern.score}\t\
+		variant = variants[bamfilename.to_s][basepattern.to_s]
+		# warn("#{bamfilename.to_s}\t#{basepattern.to_s}\n")
+		toplist.puts "#{datasetid.id}\t#{variant}\t#{pattern.score}\t\
 		#{inputreadcount}\t#{allreadcount}\t#{counter}\t#{selreadcount}\t#{selectcount}\n"
 	end
 end
