@@ -24,6 +24,23 @@ Dir.glob("*-selected.sam") do |samfile|
 end
 print "\n"
 
+variants = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+Dir.glob("*.vcf") do |vcffile|
+	bamfile2 = vcffile.gsub("\.vcf", "")
+	sam = File.read(vcffile)
+	sam.split("\n").each do |entry|
+		if entry !~ /^\#/
+			info = entry.split("\t")
+			puzzleid = [info[4], info[3]].join("_")
+			if info[11] =~ /^INDEL/
+				variants[:indel][bamfile2] = puzzleid
+			else
+				variants[:snp][bamfile2] = puzzleid
+			end
+		end
+	end
+end
+
 toplist = File.new("Highscore_info.txt", "w")
 toplist.puts "ID\tHighScore\tNoOfUsersWithHighScore\tNoOfReadsinPuzzle\t\
 NoOfUsableReadsinPuzzle\tUserPercentDifferntToBWA\tMeanPercentOfReadsDifferent\t\
