@@ -5,12 +5,12 @@
 class Fraxinus
   class << self
 
-  	### Returns hash of read ids and number of reads in the current pattern
-  	def allreads(samstring)
-  		samread = Hash.new {|h,k| h[k] = {} }
-  		hash = Hash.new {|h,k| h[k] = {} }
-  		samstring.split("\n").each do |string|
-  			saminfo = string.split("\t")
+	### Returns hash of read ids and number of reads in the current pattern
+	def allreads(samstring)
+		samread = Hash.new {|h,k| h[k] = {} }
+		hash = Hash.new {|h,k| h[k] = {} }
+		samstring.split("\n").each do |string|
+			saminfo = string.split("\t")
 			samread[saminfo[0]][:cigar] = saminfo[5]    # read id is key and cigar is value
 			samread[saminfo[0]][:bwapos] = saminfo[3]    # read id is key and aln pos is value
 			hash[saminfo[0]][string] = 1     # hash to count alignments for a read id used in the pattern
