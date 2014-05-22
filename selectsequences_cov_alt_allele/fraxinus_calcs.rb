@@ -12,6 +12,7 @@ class Fraxinus
   		samstring.split("\n").each do |string|
   			saminfo = string.split("\t")
 			samread[saminfo[0]][:cigar] = saminfo[5]    # read id is key and cigar is value
+			samread[saminfo[0]][:bwapos] = saminfo[3]    # read id is key and aln pos is value
 			hash[saminfo[0]][string] = 1     # hash to count alignments for a read id used in the pattern
 		end
 		# then delete read ids with more than one alignment information (only for first version of Fraxinus datasets)
@@ -35,6 +36,7 @@ class Fraxinus
 				if data[bamfile].key?(term.to_s) == true
 					readcount += 1
 					selread[saminfo[0]][:cigar] = saminfo[5]
+					selread[saminfo[0]][:bwapos] = saminfo[3]
 				end
 			end
 		end
@@ -62,12 +64,15 @@ class Fraxinus
 
 	### Returns number of reads not matching to machine call cigars
 	### funcation inputs are string of cigar ids from pattern table and hash of all read ids
-	def mm_allreads(cigarstring, samread)
+	def mm_allreads(cigarstring, samread, posdiff)
 		count = 0
 		cigarstring.split(",").each do |cig|
 			cigar = Cigar.find_by(id: cig)
 			if samread.key?(cigar.read_id.to_s) == true
+				playerpos = cigar.pos.to_i + posdiff
 				if samread[cigar.read_id.to_s][:cigar] != cigar.data.to_s
+					count = count + 1
+				elsif samread[cigar.read_id.to_s][:bwapos].to_i != playerpos
 					count = count + 1
 				end
 			end
@@ -78,12 +83,15 @@ class Fraxinus
 	### Returns number of reads not not matching to machine cigars
 	### that are selected to cover the varinat position
 	### funcation inputs are string of cigar ids from pattern table and hash of selected read ids
-	def mm_selreads(cigarstring, selread)
+	def mm_selreads(cigarstring, selread, posdiff)
 		count = 0
 		cigarstring.split(",").each do |cig|
 			cigar = Cigar.find_by(id: cig)
 			if selread.key?(cigar.read_id.to_s) == true
+				playerpos = cigar.pos.to_i + posdiff
 				if selread[cigar.read_id.to_s][:cigar] != cigar.data.to_s
+					count = count + 1
+				elsif selread[cigar.read_id.to_s][:bwapos].to_i != playerpos
 					count = count + 1
 				end
 			end

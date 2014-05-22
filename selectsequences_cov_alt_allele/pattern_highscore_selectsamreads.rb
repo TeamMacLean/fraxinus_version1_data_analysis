@@ -25,6 +25,7 @@ end
 print "\n"
 
 variants = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
+print "\nNumber of variants from each strain\nvcf_file\tbam_file\tsnp\tindel"
 Dir.glob("*.vcf") do |vcffile|
 	bamfile2 = vcffile.gsub("\.vcf", "")
 	sam = File.read(vcffile)
@@ -33,46 +34,61 @@ Dir.glob("*.vcf") do |vcffile|
 			info = entry.split("\t")
 			puzzleid = [info[4], info[3]].join("_")
 			if info[11] =~ /^INDEL/
-				variants[:indel][bamfile2] = puzzleid
+				variants[:indel][bamfile2][puzzleid] = info[5]
 			else
-				variants[:snp][bamfile2] = puzzleid
+				variants[:snp][bamfile2][puzzleid] = info[5]
 			end
 		end
 	end
+	print "\n#{vcffile}\t#{bamfile2}\t#{variants[:snp][bamfile2].length}\t#{variants[:indel][bamfile2].length}"
 end
+print "\n"
 
 toplist = File.new("Highscore_info.txt", "w")
-toplist.puts "ID\tHighScore\tNoOfUsersWithHighScore\tNoOfReadsinPuzzle\t\
+toplist.puts "ID\tvariant\tHighScore\tNoOfUsersWithHighScore\tNoOfReadsinPuzzle\t\
 NoOfUsableReadsinPuzzle\tUserPercentDifferntToBWA\tMeanPercentOfReadsDifferent\t\
 NoOfReadsinPuzzleCovALT\tUserPercentDifferntToBWACovALT\tMeanPercentOfReadsDifferentCovALT\n"
 
+fraxpuzzle = Hash.new {|h,k| h[k] = Hash.new(&h.default_proc)}
 #Dataset.find_each(start: 10088, batch_size: 10) do |datasetid|
 Dataset.find_each do |datasetid|
 	bamfilename =  datasetid.bam_filename                            # bamfile name of current puzzle
 	inputreadcount = datasetid.sam_file.split("\n").count.to_i 		     # total number of reads
-	samreads, allreadcount = Fraxinus.allreads(datasetid.sam_file)				       # hash of read ids in puzzle
-	selreads, selreadcount = Fraxinus.selectreads(datasetid.sam_file, samreads, sam_select_read, bamfilename)		 # reads covering ALT allele count
-<<<<<<< HEAD
+	samreads, allreadcount = Fraxcalc.allreads(datasetid.sam_file)				       # hash of read ids in puzzle
+	selreads, selreadcount = Fraxcalc.selectreads(datasetid.sam_file, samreads, sam_select_read, bamfilename)		 # reads covering ALT allele count
 	basepattern = datasetid.base_pattern.chop
 	basepattern = basepattern.gsub("\n","_")
 	basepattern = basepattern.gsub(">","")
-	patterns = 	Pattern.where(dataset_id: datasetid.id)
-	patterns.each do |pattern|
-		counter = Fraxinus.mm_allreads(pattern.cigar_files, samreads).to_i
-		selectcount = Fraxinus.mm_selreads(pattern.cigar_files, selreads).to_i
-		variant = variants[bamfilename.to_s][basepattern.to_s]
-		# warn("#{bamfilename.to_s}\t#{basepattern.to_s}\n")
-		toplist.puts "#{datasetid.id}\t#{variant}\t#{pattern.score}\t\
-		#{inputreadcount}\t#{allreadcount}\t#{counter}\t#{selreadcount}\t#{selectcount}\n"
-=======
+
+	position_info = 0
+	variant = ""
+	if variants[:indel][bamfilename].key?(basepattern) == true
+		variant = "indel"
+		position_info = variants[:indel][bamfilename][basepattern]
+	elsif variants[:snp][bamfilename].key?(basepattern) == true
+		variant = "snp"
+		position_info = variants[:snp][bamfilename][basepattern]
+	else
+		warn("#{datasetid.id}\n")
+	end
+	correct_pos_in_play = position_info.to_i - 10		# now we know real puzzle position and long reference sequence
+	pos_in_play = datasetid.pos.to_i
+	difference = correct_pos_in_play - pos_in_play
+
+	if fraxpuzzle[bamfilename].key?(variant) == true
+		fraxpuzzle[bamfilename][variant] += 1
+	else
+		fraxpuzzle[bamfilename][variant] = 1
+	end
+
 	patterns = 	Pattern.where(dataset_id: datasetid.id)
 	scores = patterns.pluck(:score)									         # score array from all patterns of current puzzle
 	high = scores.max.to_i
+	highcount = scores.count(high)
 
 	## Try to avoid puzzles with negative score, or i could use ceratin cut off here to avoid a minimum score puzzles
 	if high > 0
 
-		highcount = scores.count(high)
 		high_mismatch = 0
 		high_read_mm = []
 		high_mismatch_sel = 0
@@ -80,14 +96,14 @@ Dataset.find_each do |datasetid|
 
 		patterns.each do |pattern|
 			if pattern.score.to_i == high
-				counter = Fraxinus.mm_allreads(pattern.cigar_files, samreads).to_i
-				selectcount = Fraxinus.mm_selreads(pattern.cigar_files, selreads).to_i
+				counter = Fraxcalc.mm_allreads(pattern.cigar_files, samreads, difference).to_i
+				selectcount = Fraxcalc.mm_selreads(pattern.cigar_files, selreads, difference).to_i
 				if counter > 0
 					percent_mm_read = (counter * 100)/allreadcount.to_i
 					high_read_mm.push(percent_mm_read.to_f)
 					high_mismatch = high_mismatch + 1
 				end
-				if selectcount > 0 
+				if selectcount > 0
 					percent_mm_read_sel = (selectcount * 100)/selreadcount.to_i
 					high_read_mm_sel.push(percent_mm_read_sel.to_f)
 					high_mismatch_sel = high_mismatch_sel + 1
@@ -107,8 +123,16 @@ Dataset.find_each do |datasetid|
 			high_read_mm_sel_mean = high_read_mm_sel.inject(:+).to_f/high_read_mm_sel.size
 		end
 
-		toplist.puts "#{datasetid.id}\t#{high}\t#{highcount}\t#{inputreadcount}\t#{allreadcount}\t#{high_mmpercent}\t#{high_read_mm_mean}\t#{selreadcount}\t#{high_mm_sel_percent}\t#{high_read_mm_sel_mean}\n"
->>>>>>> parent of 216bd3f... printing variant type, each variant score and no of reads not matching etc for all alignments
+		toplist.puts "#{datasetid.id}\t#{variant}\t#{high}\t#{highcount}\t#{inputreadcount}\t#{allreadcount}\t#{high_mmpercent}\t#{high_read_mm_mean}\t#{selreadcount}\t#{high_mm_sel_percent}\t#{high_read_mm_sel_mean}\n"
 	end
 end
 
+print "\n"
+fraxpuzzle.each_key { |file|
+	print "#{file}"
+	fraxpuzzle[file].each_key { |var|
+		count = fraxpuzzle[file][var]
+		print "\t#{var}\t#{count}"
+	}
+	print "\n"
+}
