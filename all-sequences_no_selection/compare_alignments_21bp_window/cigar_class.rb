@@ -8,7 +8,7 @@ class Cigar
 			type = []
 			count = []
 			leftover = String.new(cigarstring)
-			while matches = leftover.match(/^(\d+)([MSID])(.*)/)
+			while matches = leftover.match(/^(\d+)([MSIDHNXP\=])(.*)/)
 				count.push matches[1].to_i
 				type.push matches[2]
 				leftover = matches[3]
@@ -21,7 +21,7 @@ class Cigar
 
 		def each_alignchunk(cigarstring)
 			leftover = String.new(cigarstring)
-			while matches = leftover.match(/^(\d+)([MSID])(.*)/)
+			while matches = leftover.match(/^(\d+)([MSIDHNXP\=])(.*)/)
 				yield matches[2], matches[1].to_i
 				leftover = matches[3]
 			end
@@ -30,12 +30,14 @@ class Cigar
 			end
 		end
 
-		def percent_identity(cigarstring, reference_sequence, refpos, query_sequence_string)
+		def percent_identity(cigarstring, reference_sequence, ref_index, query_sequence_string)
 			num_match = 0
 			num_mismatch = 0
 
-			#reference_sequence_string = reference_sequence[refpos..reference_sequence.length]
-			ref_index = refpos
+			types, counts = alignchunks(cigarstring)
+			if types[0] =~ /S/
+				ref_index -= counts[0]
+			end
 			query_index = 0
 			each_alignchunk(cigarstring) do |type, count|
 				case type
@@ -69,12 +71,15 @@ class Cigar
 			return percent, num_match, num_mismatch
 		end
 
-		def aligner(type, count, ref, offset, read)
+		def aligner(type, count, ref, ref_index, read)
+			if type[0] =~ /S/
+				ref_index -= counts[0]
+			end
 			alignment = "\t"
-			alignment = alignment + ref[0, offset]
+			alignment = alignment + ref[0, ref_index]
 			if type.include?("I")
 				temp = Array.new(type)
-				printpos = offset
+				printpos = ref_index
 				index = 0
 				while temp.empty? == false
 					if type[index] =~ /[DMS]/
@@ -88,10 +93,10 @@ class Cigar
 				end
 				alignment = alignment + ref[printpos..-1]
 			else
-				alignment = alignment + ref[offset..-1]
+				alignment = alignment + ref[ref_index..-1]
 			end
 
-			alignment = alignment + "\n\t" + (" " * offset)
+			alignment = alignment + "\n\t" + (" " * ref_index)
 			if type.include?("D")
 				temp = Array.new(type)
 				printpos = 0
