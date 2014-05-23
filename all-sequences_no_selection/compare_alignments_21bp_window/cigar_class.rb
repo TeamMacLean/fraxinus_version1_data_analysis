@@ -122,8 +122,10 @@ class Cigar
 			newcigar = ""
 			begin_trim = 0
 			end_trim = 0
+			newalnpos = 0
 			i = 0
 			if align_position < pattern_positon
+				newalnpos = pattern_positon
 				puzzlelen = 21
 				to_cut = pattern_positon - align_position
 				begin_trim += to_cut
@@ -170,6 +172,7 @@ class Cigar
 					i += 1
 				end
 			elsif align_position >= pattern_positon
+				newalnpos = align_position
 				puzzlelen = 21 - (align_position - pattern_positon)
 				end_trim += puzzlelen
 				while puzzlelen > 0 and i < types.length do
@@ -194,7 +197,7 @@ class Cigar
 					i += 1
 				end
 			end
-			return newcigar, begin_trim, end_trim
+			return newcigar, begin_trim, end_trim, newalnpos
 		end
 
 	end

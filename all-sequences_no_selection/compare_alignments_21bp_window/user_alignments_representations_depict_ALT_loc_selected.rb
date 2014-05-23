@@ -51,34 +51,39 @@ Dir.glob("*.vcf") do |filename|
 						if types[0] =~ /S/
 								adjbwapos -= counts[0]
 						end
-						newbwacigar, bwabegin, bwaend = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
+						newbwacigar, bwabegin, bwaend, bwaalnpos = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
 						bwaseq = readseq[bwabegin..(bwaend-1)]
-=begin
+
 						initial_gap = bwapos.to_i - longref_startpos
 						adjusted = initial_gap
 						if types[0] =~ /S/
 							adjusted = adjusted - counts[0].to_i # BWA cigar treats alingment position after soft clipping (default)
 						end
 						percent, match, mismatch = Cigar.percent_identity(bwacigar, info[0].upcase, initial_gap, readseq)
-=end
+						gap_1 = bwaalnpos.to_i - longref_startpos
+						bwapercent, bwamatch, bwamismatch = Cigar.percent_identity(newbwacigar, info[0].upcase, gap_1, bwaseq)
+
 						types2, counts2 = Cigar.alignchunks(playercigar)
-						newplayercigar, playbegin, playend = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
+						newplayercigar, playbegin, playend, playalnpos = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
 						playseq = readseq[playbegin..(playend-1)]
 						print "\t#{newbwacigar}\t#{bwaseq}\t#{newplayercigar}\t#{playseq}"
-=begin
+
 						initial_gap2 = corrected_playerpos - longref_startpos
 						adjusted2 = initial_gap2
 						if types2[0] =~ /S/
 							adjusted2 = adjusted2 + counts2[0].to_i # Fraxinus cigar treats alingment position begining of a read even for soft clipping (take care about this)
 						end
+						percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
+						gap_2 = playalnpos.to_i - longref_startpos
+						playpercent, playmatch, playmismatch = Cigar.percent_identity(newplayercigar, info[0].upcase, gap_2, playseq)
 
 						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
 						playeralign = Cigar.aligner(types2, counts2, info[0], initial_gap2, readseq)
 
-						print "\n#{bwaalign}\n#{playeralign}\n"
+						# print "\n#{bwaalign}\n#{playeralign}\n"
 
-						percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 
+=begin
 						if percent2 > percent and (percent2 - percent) > 1
 						# if percent2 > percent
 							stats = [percent, match, mismatch, percent2, match2, mismatch2].join("\t")
