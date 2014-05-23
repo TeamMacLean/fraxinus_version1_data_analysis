@@ -61,7 +61,6 @@ Dir.glob("*.vcf") do |filename|
 						end
 						percent, match, mismatch = Cigar.percent_identity(bwacigar, info[0].upcase, initial_gap, readseq)
 						gap_1 = bwaalnpos.to_i - longref_startpos
-						bwapercent, bwamatch, bwamismatch = Cigar.percent_identity(newbwacigar, info[0].upcase, gap_1, bwaseq)
 
 						types2, counts2 = Cigar.alignchunks(playercigar)
 						newplayercigar, playbegin, playend, playalnpos = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
@@ -80,7 +79,8 @@ Dir.glob("*.vcf") do |filename|
 						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
 						playeralign = Cigar.aligner(types2, counts2, info[0], initial_gap2, readseq)
 
-						# print "\n#{bwaalign}\n#{playeralign}\n"
+						print "\n#{bwaalign}\n#{playeralign}\n"
+						bwapercent, bwamatch, bwamismatch = Cigar.percent_identity(newbwacigar, info[0].upcase, gap_1, bwaseq)
 
 
 =begin
