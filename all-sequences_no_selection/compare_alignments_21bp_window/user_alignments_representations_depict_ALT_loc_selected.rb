@@ -52,6 +52,7 @@ Dir.glob("*.vcf") do |filename|
 								adjbwapos -= counts[0]
 						end
 						newbwacigar, bwabegin, bwaend = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
+						bwaseq = readseq[bwabegin..(bwaend-1)]
 =begin
 						initial_gap = bwapos.to_i - longref_startpos
 						adjusted = initial_gap
@@ -62,7 +63,8 @@ Dir.glob("*.vcf") do |filename|
 =end
 						types2, counts2 = Cigar.alignchunks(playercigar)
 						newplayercigar, playbegin, playend = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
-						print "\t#{newbwacigar}\t#{newplayercigar}"
+						playseq = readseq[playbegin..(playend-1)]
+						print "\t#{newbwacigar}\t#{bwaseq}\t#{newplayercigar}\t#{playseq}"
 =begin
 						initial_gap2 = corrected_playerpos - longref_startpos
 						adjusted2 = initial_gap2
@@ -88,7 +90,7 @@ Dir.glob("*.vcf") do |filename|
 						end
 =end
 					else
-						print "\t*\t*"
+						print "\t*\t*\t*\t*"
 					end
 					print "\n"
 				}
