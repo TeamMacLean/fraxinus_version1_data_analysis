@@ -73,30 +73,30 @@ class Cigar
 
 		def aligner(type, count, ref, ref_index, read)
 			if type[0] =~ /S/
-				ref_index -= counts[0]
+				ref_index -= count[0]
 			end
 			alignment = "\t"
-			alignment = alignment + ref[0, ref_index]
+			alignment += ref[0, ref_index]
 			if type.include?("I")
 				temp = Array.new(type)
 				printpos = ref_index
 				index = 0
 				while temp.empty? == false
 					if type[index] =~ /[DMS]/
-						alignment = alignment + ref[printpos, count[index]]
-						printpos = count[index].to_i + printpos
+						alignment += ref[printpos, count[index]]
+						printpos += count[index].to_i
 					elsif type[index] =~ /I/
-						alignment = alignment + (" " * count[index])
+						alignment += (" " * count[index])
 					end
 					temp.slice!(0)
-					index = 1 + index
+					index += 1
 				end
-				alignment = alignment + ref[printpos..-1]
+				alignment += ref[printpos..-1]
 			else
-				alignment = alignment + ref[ref_index..-1]
+				alignment += ref[ref_index..-1]
 			end
 
-			alignment = alignment + "\n\t" + (" " * ref_index)
+			alignment += "\n\t" + (" " * ref_index)
 			if type.include?("D")
 				temp = Array.new(type)
 				printpos = 0
@@ -104,21 +104,31 @@ class Cigar
 				while temp.empty? == false
 					if type[index] =~ /[IMS]/
 						if type[index] =~ /S/
-							alignment = alignment + (read[printpos, count[index]]).downcase
+							alignment += (read[printpos, count[index]]).downcase
 						else
-							alignment = alignment + read[printpos, count[index]]
+							alignment += read[printpos, count[index]]
 						end
-						printpos = count[index].to_i + printpos
+						printpos += count[index].to_i
 					elsif type[index] =~ /D/
-						alignment = alignment + (" " * count[index])
+						alignment += (" " * count[index])
 					end
 					temp.slice!(0)
-					index = 1 + index
+					index += 1
 				end
 			else
-				alignment = alignment + read
+				index = 0
+				while temp.empty? == false
+					if type[index] =~ /S/
+						alignment += (read[printpos, count[index]]).downcase
+					else
+						alignment += read[printpos, count[index]]
+					end
+					printpos += count[index].to_i
+					temp.slice!(0)
+					index += 1
+				end
 			end
-			alignment = alignment + "\n"
+			alignment += "\n"
 			return alignment
 		end
 
@@ -129,9 +139,6 @@ class Cigar
 			end_trim = 0
 			newalnpos = 0
 			i = 0
-			if type[0] =~ /S/
-				align_position -= counts[0]
-			end			
 			if align_position < pattern_positon
 				newalnpos = pattern_positon
 				puzzlelen = 21
