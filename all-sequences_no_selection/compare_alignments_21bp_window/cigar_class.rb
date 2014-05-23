@@ -183,6 +183,7 @@ class Cigar
 				while puzzlelen > 0 and i < types.length do
 					if types[i] =~ /S/
 						begin_trim += counts[i]
+						end_trim += counts[i]
 						i += 1
 						next
 					elsif types[i] =~ /I/
