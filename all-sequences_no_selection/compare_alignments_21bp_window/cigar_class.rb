@@ -97,7 +97,7 @@ class Cigar
 			end
 
 			alignment += "\n\t" + (" " * ref_index)
-			if type.include?("D")
+			if type.include?("D") or type.include?("S") 
 				temp = Array.new(type)
 				printpos = 0
 				index = 0
@@ -116,17 +116,7 @@ class Cigar
 					index += 1
 				end
 			else
-				index = 0
-				while temp.empty? == false
-					if type[index] =~ /S/
-						alignment += (read[printpos, count[index]]).downcase
-					else
-						alignment += read[printpos, count[index]]
-					end
-					printpos += count[index].to_i
-					temp.slice!(0)
-					index += 1
-				end
+				alignment += read
 			end
 			alignment += "\n"
 			return alignment
