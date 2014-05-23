@@ -51,7 +51,7 @@ Dir.glob("*.vcf") do |filename|
 						if types[0] =~ /S/
 								adjbwapos -= counts[0]
 						end
-						newbwacigar = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
+						newbwacigar, bwabegin, bwaend = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
 =begin
 						initial_gap = bwapos.to_i - longref_startpos
 						adjusted = initial_gap
@@ -61,7 +61,7 @@ Dir.glob("*.vcf") do |filename|
 						percent, match, mismatch = Cigar.percent_identity(bwacigar, info[0].upcase, initial_gap, readseq)
 =end
 						types2, counts2 = Cigar.alignchunks(playercigar)
-						newplayercigar = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
+						newplayercigar, playbegin, playend = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
 						print "\t#{newbwacigar}\t#{newplayercigar}"
 =begin
 						initial_gap2 = corrected_playerpos - longref_startpos
