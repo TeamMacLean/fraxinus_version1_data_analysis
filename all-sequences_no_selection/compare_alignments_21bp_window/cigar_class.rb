@@ -129,6 +129,9 @@ class Cigar
 			end_trim = 0
 			newalnpos = 0
 			i = 0
+			if type[0] =~ /S/
+				align_position -= counts[0]
+			end			
 			if align_position < pattern_positon
 				newalnpos = pattern_positon
 				puzzlelen = 21

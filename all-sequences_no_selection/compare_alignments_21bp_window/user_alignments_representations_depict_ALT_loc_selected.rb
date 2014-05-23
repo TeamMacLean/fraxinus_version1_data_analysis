@@ -47,18 +47,10 @@ Dir.glob("*.vcf") do |filename|
 						longref_startpos = info[1].to_i
 
 						types, counts = Cigar.alignchunks(bwacigar)
-						adjbwapos = bwapos
-						if types[0] =~ /S/
-								adjbwapos -= counts[0]
-						end
-						newbwacigar, bwabegin, bwaend, bwaalnpos = Cigar.newcigars(bwacigar,correct_pos_in_play,adjbwapos)
+						newbwacigar, bwabegin, bwaend, bwaalnpos = Cigar.newcigars(bwacigar,correct_pos_in_play,bwapos)
 						bwaseq = readseq[bwabegin..(bwaend-1)]
 
 						initial_gap = bwapos.to_i - longref_startpos
-						adjusted = initial_gap
-						if types[0] =~ /S/
-							adjusted = adjusted - counts[0].to_i # BWA cigar treats alingment position after soft clipping (default)
-						end
 						percent, match, mismatch = Cigar.percent_identity(bwacigar, info[0].upcase, initial_gap, readseq)
 						gap_1 = bwaalnpos.to_i - longref_startpos
 
@@ -76,8 +68,8 @@ Dir.glob("*.vcf") do |filename|
 						gap_2 = playalnpos.to_i - longref_startpos
 						playpercent, playmatch, playmismatch = Cigar.percent_identity(newplayercigar, info[0].upcase, gap_2, playseq)
 
-						bwaalign = Cigar.aligner(types, counts, info[0], adjusted, readseq)
-						playeralign = Cigar.aligner(types2, counts2, info[0], initial_gap2, readseq)
+						bwaalign = Cigar.aligner(types, counts, info[0], initial_gap, readseq)
+						playeralign = Cigar.aligner(types2, counts2, info[0], adjusted2, readseq)
 
 						print "\n#{bwaalign}\n#{playeralign}\n"
 						bwapercent, bwamatch, bwamismatch = Cigar.percent_identity(newbwacigar, info[0].upcase, gap_1, bwaseq)
