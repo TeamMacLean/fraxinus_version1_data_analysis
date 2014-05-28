@@ -55,15 +55,16 @@ Dir.glob("*.vcf") do |filename|
 						gap_1 = bwaalnpos.to_i - longref_startpos
 
 						types2, counts2 = Cigar.alignchunks(playercigar)
-						newplayercigar, playbegin, playend, playalnpos = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
-						playseq = readseq[playbegin..(playend-1)]
-						print "\t#{newbwacigar}\t#{bwaseq}\t#{newplayercigar}\t#{playseq}"
-
 						initial_gap2 = corrected_playerpos - longref_startpos
 						adjusted2 = initial_gap2
 						if types2[0] =~ /S/
-							adjusted2 = adjusted2 + counts2[0].to_i # Fraxinus cigar treats alingment position begining of a read even for soft clipping (take care about this)
+							adjusted2 += counts2[0].to_i # Fraxinus cigar treats alingment position begining of a read even for soft clipping (take care about this)
+							corrected_playerpos += counts2[0].to_i
 						end
+
+						newplayercigar, playbegin, playend, playalnpos = Cigar.newcigars(playercigar,correct_pos_in_play,corrected_playerpos)
+						playseq = readseq[playbegin..(playend-1)]
+						print "\t#{newbwacigar}\t#{bwaseq}\t#{newplayercigar}\t#{playseq}"
 						percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 						gap_2 = playalnpos.to_i - longref_startpos
 
