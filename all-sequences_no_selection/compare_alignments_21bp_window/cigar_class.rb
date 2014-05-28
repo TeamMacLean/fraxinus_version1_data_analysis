@@ -109,7 +109,9 @@ class Cigar
 						if type[index] =~ /S/
 							alignment += (read[printpos, count[index]]).downcase
 						else
-							alignment += read[printpos, count[index]]
+							if printpos < read.length.to_i
+								alignment += read[printpos, count[index]]
+							end
 						end
 						printpos += count[index].to_i
 					elsif type[index] =~ /D/
