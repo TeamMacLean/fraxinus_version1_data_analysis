@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 ### puzzle input reads and alignment cigars to hash
-class Fraxinus
+class Fraxcalc
   class << self
 
 	### Returns hash of read ids and number of reads in the current pattern

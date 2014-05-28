@@ -72,8 +72,7 @@ Dataset.find_each do |datasetid|
 		warn("#{datasetid.id}\n")
 	end
 	correct_pos_in_play = position_info.to_i - 10		# now we know real puzzle position and long reference sequence
-	pos_in_play = datasetid.pos.to_i
-	difference = correct_pos_in_play - pos_in_play
+	difference = correct_pos_in_play - datasetid.pos.to_i
 
 	if fraxpuzzle[bamfilename].key?(variant) == true
 		fraxpuzzle[bamfilename][variant] += 1
