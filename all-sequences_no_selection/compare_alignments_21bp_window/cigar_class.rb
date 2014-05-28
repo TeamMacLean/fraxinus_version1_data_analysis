@@ -91,7 +91,9 @@ class Cigar
 					temp.slice!(0)
 					index += 1
 				end
-				alignment += ref[printpos..-1]
+				if printpos < ref.length.to_i
+					alignment += ref[printpos..-1]
+				end
 			else
 				alignment += ref[ref_index..-1]
 			end
@@ -136,8 +138,8 @@ class Cigar
 				begin_trim += to_cut
 				while to_cut > 0 and i < types.length do
 					if types[i] =~ /I/
-						i += 1
 						begin_trim += counts[i]
+						i += 1
 						next
 					end
 					if types[i] =~ /D/
