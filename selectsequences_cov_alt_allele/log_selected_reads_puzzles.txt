@@ -13,15 +13,3 @@ upton_broad_and_marshes_vs_tgac1-pe.sorted.bam.vcf	upton_broad_and_marshes_vs_tg
 ashwellthorpe1_vs_tgac1-pe.sorted.bam	snp	2927	indel	521		10
 ashwellthorpe2_vs_tgac1-pe.sorted.bam	snp	1121	indel	170
 upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	snp	4964	indel	374
-
-Addtional 10 puzzles that are not in vcf file
-1279
-1280
-1281
-1282
-1283
-1284
-1285
-1286
-1287
-1288
