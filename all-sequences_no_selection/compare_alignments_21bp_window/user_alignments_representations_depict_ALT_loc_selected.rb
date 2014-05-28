@@ -24,9 +24,14 @@ Dir.glob("*.vcf") do |filename|
 		if entry !~ /^\#/
 			info = entry.split("\t")
 			puzzleid = [info[4], info[3]].join("_")
+			if info[11] =~ /^INDEL/
+				variant = "indel"
+			else
+				variant = "snp"
+			end
 			if puzzles[bamfilename.to_s].key?(puzzleid.to_s) == true
 				puzzles[bamfilename.to_s][puzzleid.to_s].each_key { |key|
-					print "#{info[4]}\t#{info[3]}\t#{info[5]}\t#{key}"
+					print "#{variant}\t#{info[4]}\t#{info[3]}\t#{info[5]}"
 
 					data = key.split("\t")
 					pos_in_play = data[2].to_i
@@ -68,20 +73,19 @@ Dir.glob("*.vcf") do |filename|
 						percent2, match2, mismatch2 = Cigar.percent_identity(playercigar, info[0].upcase, adjusted2, readseq)
 						gap_2 = playalnpos.to_i - longref_startpos
 
-						warn ("#{initial_gap}\t#{adjusted2}\n")
+						# warn ("#{initial_gap}\t#{adjusted2}\n")
 						bwaalign = Cigar.aligner(bwacigar, info[0], initial_gap, readseq)
 						playeralign = Cigar.aligner(playercigar, info[0], adjusted2, readseq)
 
-						print "\n#{bwaalign}\n#{playeralign}\n"
-						print "\t#{bwabegin}\t#{bwaend}\t#{bwaalnpos}\t#{playbegin}\t#{playend}\t#{playalnpos}"
+						# print "\n#{bwaalign}\n#{playeralign}\n"
+						# print "\t#{bwabegin}\t#{bwaend}\t#{bwaalnpos}\t#{playbegin}\t#{playend}\t#{playalnpos}"
 						bwapercent, bwamatch, bwamismatch = Cigar.percent_identity(newbwacigar, info[0].upcase, gap_1, bwaseq)
 						playpercent, playmatch, playmismatch = Cigar.percent_identity(newplayercigar, info[0].upcase, gap_2, playseq)
-						print "\t#{percent}\t#{percent2}\t#{bwapercent}\t#{playpercent}\n"
+						print "\t#{percent}\t#{percent2}\t#{bwapercent}\t#{playpercent}"
 
 						newbwaalign = Cigar.aligner(newbwacigar, info[0], gap_1, bwaseq)
 						newplayeralign = Cigar.aligner(newplayercigar, info[0], gap_2, playseq)
-						print "\n#{newbwaalign}\n#{newplayeralign}\n"
-
+						# print "\n#{newbwaalign}\n#{newplayeralign}\n"
 
 =begin
 						if percent2 > percent and (percent2 - percent) > 1
@@ -95,9 +99,9 @@ Dir.glob("*.vcf") do |filename|
 						end
 =end
 					else
-						print "\t*\t*\t*\t*"
+						print "\t*\t-\t-\t-\t-\t-\t-\t-"
 					end
-					print "\n"
+					print "\t#{key}\n"
 				}
 			end
 		end
