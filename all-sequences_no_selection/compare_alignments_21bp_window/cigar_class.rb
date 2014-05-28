@@ -71,7 +71,8 @@ class Cigar
 			return percent, num_match, num_mismatch
 		end
 
-		def aligner(type, count, ref, ref_index, read)
+		def aligner(cigarstring, ref, ref_index, read)
+			type, count = alignchunks(cigarstring)
 			if type[0] =~ /S/
 				ref_index -= count[0]
 			end
@@ -137,15 +138,12 @@ class Cigar
 				to_cut = pattern_positon - align_position
 				begin_trim += to_cut
 				while to_cut > 0 and i < types.length do
-					if types[i] =~ /I/
+					if types[i] =~ /I/ or types[i] =~ /S/
 						begin_trim += counts[i]
 						i += 1
 						next
-					end
-					if types[i] =~ /D/
+					elsif types[i] =~ /D/
 						begin_trim -= counts[i]
-					elsif types[i] =~ /S/
-						begin_trim += counts[i]
 					end					
 					to_cut -= counts[i]
 					if to_cut < 0
