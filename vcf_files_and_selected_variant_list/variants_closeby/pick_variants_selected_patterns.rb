@@ -5,9 +5,10 @@
 
 require 'rubygems'
 
-data = Hash.new {|h,k| h[k] = {} }
+hash = Hash.new {|h,k| h[k] = {} }
 Dir.glob("*.vcf") do |vcffile|
 	print "#{vcffile}\n"
+	data = Hash.new {|h,k| h[k] = {} }
 	vcflines = File.read(vcffile)
 	vcflines.split("\n").each do |vcf|
 		if vcf =~ /^Cf/
@@ -33,6 +34,10 @@ Dir.glob("*.vcf") do |vcffile|
 				diff = position.to_i - previous
 				if diff < 75
 					print "#{contig}\t#{previous}\t#{data[contig][previous]}\t#{scaffold}\t#{position}\t#{data[scaffold][position]}\t#{diff}\n"
+					input1 = [contig, previous, data[contig][previous]].join('_')
+					hash[vcffile][input1] = 1
+					input2 = [scaffold, position, data[scaffold][position]].join('_')
+					hash[vcffile][input2] = 1
 				end
 				previous = position.to_i
 				contig = scaffold
@@ -41,3 +46,13 @@ Dir.glob("*.vcf") do |vcffile|
 	}
 	print "\n"
 end
+
+hash.each_key { |file|
+	hash[file].each_key { |variants|
+		print "#{file}\t#{variants}\n"
+	}
+}
+
+hash.each_key { |file|
+	print "#{file}\t#{hash[file].length}\n"
+}
