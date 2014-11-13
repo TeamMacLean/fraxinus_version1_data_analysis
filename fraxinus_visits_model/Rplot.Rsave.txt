@@ -46,6 +46,127 @@ Platform: x86_64-apple-darwin10.8.0 (64-bit)
 locale:
 [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
 
+
+
+12th November 2014 - Errorbar plot
+
+
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> setwd("~/ipython_notebooks/fraxinus_visits/2014-10-13")
+> data <- read.delim(file="visit_iterations.txt",header = TRUE)
+> head(data)
+  Iteration Day   Players
+1         1   1 1250.8333
+2         1   2 1192.9000
+3         1   3  800.9833
+4         1   4  609.9500
+5         1   5  498.7333
+6         1   6  418.1833
+> library(ggplot2)
+> summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
++                       conf.interval=.95, .drop=TRUE) {
++     require(plyr)
++     
++     # New version of length which can handle NA's: if na.rm==T, don't count them
++     length2 <- function (x, na.rm=FALSE) {
++         if (na.rm) sum(!is.na(x))
++         else       length(x)
++     }
++     
++     # This does the summary. For each group's data frame, return a vector with
++     # N, mean, and sd
++     datac <- ddply(data, groupvars, .drop=.drop,
++                    .fun = function(xx, col) {
++                        c(N    = length2(xx[[col]], na.rm=na.rm),
++                          mean = mean   (xx[[col]], na.rm=na.rm),
++                          sd   = sd     (xx[[col]], na.rm=na.rm)
++                        )
++                    },
++                    measurevar
++     )
++ 
++ 
++ # Rename the "mean" column    
++ datac <- rename(datac, c("mean" = measurevar))
++ 
++ datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
++ 
++ # Confidence interval multiplier for standard error
++ # Calculate t-statistic for confidence interval: 
++ # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
++ ciMult <- qt(conf.interval/2 + .5, datac$N-1)
++ datac$ci <- datac$se * ciMult
++ 
++ return(datac)
++ }
+> 
+> dfc <- summarySE(data, measurevar = "Players", groupvars = "Day")
+Loading required package: plyr
+> head(dfc)
+  Day   N   Players        sd         se         ci
+1   1 999 1250.0672 0.9981917 0.03158139 0.06197354
+2   2 999 1193.7748 3.5745455 0.11309362 0.22192856
+3   3 999  802.4665 3.6298893 0.11484462 0.22536463
+4   4 999  609.8828 3.7408007 0.11835370 0.23225065
+5   5 999  494.6149 3.5626868 0.11271842 0.22119230
+6   6 999  417.8575 3.7951247 0.12007243 0.23562340
+> ggplot(dfc, aes(x=Day, y=Players)) + 
++     geom_errorbar(aes(ymin=Players-se, ymax=Players+se), width=.1) +
++     geom_line() +
++     geom_point()
+> ggplot(dfc, aes(x=Day, y=Players)) + 
++     geom_errorbar(aes(ymin=Players-se, ymax=Players+se), width=.1) +
++     geom_line() +
++     geom_point() + scale_y_log10()
+> ggplot(dfc, aes(x=Day, y=Players)) + 
++     geom_errorbar(aes(ymin=Players-se, ymax=Players+se), width=.1) +
++     geom_line() +
++     geom_point() + scale_y_log10() + scale_x_log10()
+> tail(dfc)
+    Day   N  Players       sd        se        ci
+352 352 999 13.93218 3.506852 0.1109519 0.2177257
+353 353 999 13.91940 3.711436 0.1174246 0.2304275
+354 354 999 13.83924 3.626709 0.1147440 0.2251672
+355 355 999 13.69241 3.817405 0.1207774 0.2370067
+356 356 999 13.56557 3.775047 0.1194372 0.2343768
+357 357 999 13.65642 3.579995 0.1132660 0.2222669
+> 
+> sessionInfo()
+R version 3.0.2 (2013-09-25)
+Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+locale:
+[1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] plyr_1.8.1      ggplot2_0.9.3.1
+
+loaded via a namespace (and not attached):
+ [1] colorspace_1.2-4 digest_0.6.4     grid_3.0.2       gtable_0.1.2     labeling_0.2     MASS_7.3-32      munsell_0.4.2    proto_0.3-10    
+ [9] Rcpp_0.11.1      reshape2_1.4     scales_0.2.4     stringr_0.6.2    tools_3.0.2     
+> 
+
+
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
