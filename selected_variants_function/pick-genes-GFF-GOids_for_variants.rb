@@ -21,7 +21,7 @@ gff1.records.each do | record |
 	end
 end
 
-genes = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] ={} } }
+contigs = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] ={} } }
 ## Open gff file of genes on contigs
 ## and parse gene records and their limits
 gff2 = Bio::GFF::GFF3.new(File.read(ARGV[1]))
@@ -29,28 +29,46 @@ gff2.records.each do | record |
 	if record.feature == 'gene'
 		geneid = record.get_attributes('ID').join(" ").gsub(/\.\d$/, '')
 		limits = [record.start, record.end].join("_")
-		genes[geneid] = limits
+		contigs[geneid] = limits
 	end
 end
 
-=begin
-
-CSV.foreach(ARGV[0], :headers => true) do |csv_row|
-  ## Based on header info each gene info is placed to a hash and all splice variant information is stored under one gene name
-  geneid = (csv_row['gene']).gsub(/\.\d$/, "")
-#  puts geneid
-  if data.key?(geneid) == true
-  	if (data[geneid][csv_row['database']]).key?(csv_row['id']) == false
-		data[geneid][csv_row['database']][csv_row['id']] = csv_row['description']
+variants = Hash.new {|h,k| h[k] = {} }
+## Open alignments comparison file from Fraxinus analysis
+## and store improved variant locations to a hash
+## file header
+## variant	contig_id	pattern	pos	BWA_CIGAR	BWA_ALGN	PLAY_CIGAR	PLAY_ALGN	BWA_READ	PLAY_READ	BWA_WIN	PLAY_WIN
+lines = File.read(ARGV[2])
+lines.split("\n").each do |line|
+	if line !~ /^variant/
+		array1 = line.split("\t")
+		if (array1[11].to_f > array1[10].to_f) and (array1[9].to_f >= array1[8].to_f)
+			term = [array1[0], array1[1], array1[2], array1[3]].join("_")
+			variants[term] = array1[3]
+		end
 	end
-  else
-	data[geneid][csv_row['database']][csv_row['id']] = csv_row['description']
-  end
 end
 
-## New file is opened to write the gff info
-outfile = File.new("Chalara_fraxinea_ass_s1v1_ann_v1.1.gene_goids.gff", "w")
-	outfile.puts "##gff-version 3"
-	outfile.puts "##In addition to 'Ontology_term', 'ontology_term_description', 'PFAM' and 'PFAM_description' was added to Attributes field"
+candis = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] ={} } }
+variants.each_key { |selected|
+	contigs.each_key { |gene|
+		coord = contigs[gene].split("_")
+		if (variants[selected].to_i >= coord[0].to_i) and (variants[selected].to_i <= coord[0].to_i)
+			candis[selected][gene] = 1
+		end
+	}
+}
 
-=end
+## New file is opened to write the selected variants info
+outfile = File.new("Selected_gene_goids.txt", "w")
+variants.each_key { |selected2|
+	outfile.print "#{selected2}"
+	if candis.has_key?(selected2)
+		candis[selected2].each_key { |terms|
+			outfile.print "\t#{terms}"
+		}
+		outfile.print "\n"
+	else
+		outfile.print "\tNo genes\n"
+	end
+}
