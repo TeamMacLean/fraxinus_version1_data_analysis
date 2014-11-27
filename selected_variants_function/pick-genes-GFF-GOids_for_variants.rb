@@ -54,7 +54,7 @@ variants.each_key { |contig|
 	variants[contig].each_key { |selected|
 		contigs[contig].each_key { |gene|
 			coord = contigs[contig][gene].split("_")
-			warn "#{gene}\t#{coord[0].to_i}\t#{coord[1].to_i}"
+			# warn "#{gene}\t#{coord[0].to_i}\t#{coord[1].to_i}"
 			if (variants[contig][selected].to_i >= coord[0].to_i) and (variants[contig][selected].to_i <= coord[1].to_i)
 				candis[selected][gene] = 1
 			end
@@ -69,7 +69,7 @@ variants.each_key { |contig2|
 		outfile.print "#{selected2}"
 		if candis.has_key?(selected2)
 			candis[selected2].each_key { |terms|
-				outfile.print "\t#{terms}"
+				outfile.print "\t#{data[terms]}"
 			}
 			outfile.print "\n"
 		else
