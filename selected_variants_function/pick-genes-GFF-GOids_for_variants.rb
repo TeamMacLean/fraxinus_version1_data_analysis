@@ -8,47 +8,32 @@ require 'bio'
 data = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] ={} } }
 ## Open gff file from scaffolds and parse gene records with Ontology_term and descriptions
 ## selected genes are pushed to a hash
-gff3 = Bio::GFF::GFF3.new(File.read(ARGV[0]))
-gff3.records.each do | record |
+gff1 = Bio::GFF::GFF3.new(File.read(ARGV[0]))
+gff1.records.each do | record |
 	if record.feature == 'gene'
-		geneid = record.get_attributes('ID')
+		geneid = record.get_attributes('ID').join(" ")
 		#go = record.get_attributes('Ontology_term')
-		godes = record.get_attributes('ontology_term_description')
+		godes = record.get_attributes('ontology_term_description').join(" ")
+		if godes == ''
+			godes = 'NA'
+		end
 		data[geneid] = godes
 	end
 end
 
-=begin
-## Existing gff file is parsed and gene records are appended with Ontology_term and descriptions
-gff3 = Bio::GFF::GFF3.new(File.read(ARGV[1]))
-gff3.records.each do | record |
-  if record.feature == 'gene'
-  	geneid = record.get_attributes('ID')
-  	if  data.key?(geneid[0]) == true
-  		data[geneid[0]].each { |database, v1|
-	  		array_term = []
-	  		array_descrip = []
-  			data[geneid[0]][database].each { |id, v2|
-  				array_term.push(id)
-		  		array_descrip.push(v2)
-		  	}
-		  	if database == 'GO'
-				record.attributes <<   ["Ontology_term", array_term.join(',')]
-				record.attributes <<   ["ontology_term_description", array_descrip.join(',')]
-			elsif database == 'PFAM'
-				record.attributes <<   ["PFAM", array_term.join(',')]
-				record.attributes <<   ["PFAM_description", array_descrip.join(',')]
-			end
-		}
-	  outfile.puts "#{record.to_s}"
-	else
-	  outfile.puts "#{record.to_s}"
+genes = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] ={} } }
+## Open gff file of genes on contigs
+## and parse gene records and their limits
+gff2 = Bio::GFF::GFF3.new(File.read(ARGV[1]))
+gff2.records.each do | record |
+	if record.feature == 'gene'
+		geneid = record.get_attributes('ID').join(" ").gsub(/\.\d$/, '')
+		limits = [record.start, record.end].join("_")
+		genes[geneid] = limits
 	end
-  else
-    outfile.puts "#{record.to_s}"
-  end
 end
 
+=begin
 
 CSV.foreach(ARGV[0], :headers => true) do |csv_row|
   ## Based on header info each gene info is placed to a hash and all splice variant information is stored under one gene name
