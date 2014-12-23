@@ -16,9 +16,9 @@ end
 ### Database config
 ActiveRecord::Base.establish_connection(
 	:adapter => "mysql",
-	:database => "db1",
+	:database => "atd",
 	:username => "root",
-	:password => "",
+	:password => "user",
 	:host => "localhost"
 	)
 
