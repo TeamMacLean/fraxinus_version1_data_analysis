@@ -29,14 +29,14 @@ toplist.puts "ID\tHighScore\tNoOfUsersWithHighScore\tNoOfReadsinPuzzle\t\
 NoOfUsableReadsinPuzzle\tUserPercentDifferntToBWA\tMeanPercentOfReadsDifferent\t\
 NoOfReadsinPuzzleCovALT\tUserPercentDifferntToBWACovALT\tMeanPercentOfReadsDifferentCovALT\n"
 
-#Dataset.find_each(batch_size: 100) do |id|
-Dataset.find_each do |id|
-	data = Dataset.find_by(id: id)
-	bamfilename =  data.bam_filename                            # bamfile name of current puzzle
-	inputreadcount = data.sam_file.split("\n").count.to_i 		     # total number of reads
-	samreads, allreadcount = Fraxinus.allreads(data.sam_file)				       # hash of read ids in puzzle
-	selreads, selreadcount = Fraxinus.selectreads(data.sam_file, samreads, sam_select_read, bamfilename)		 # reads covering ALT allele count
-	scores = Pattern.where(dataset_id: id).pluck(:score)									         # score array from all patterns of current puzzle
+#Dataset.find_each(start: 10088, batch_size: 10) do |datasetid|
+Dataset.find_each do |datasetid|
+	bamfilename =  datasetid.bam_filename                            # bamfile name of current puzzle
+	inputreadcount = datasetid.sam_file.split("\n").count.to_i 		     # total number of reads
+	samreads, allreadcount = Fraxinus.allreads(datasetid.sam_file)				       # hash of read ids in puzzle
+	selreads, selreadcount = Fraxinus.selectreads(datasetid.sam_file, samreads, sam_select_read, bamfilename)		 # reads covering ALT allele count
+	patterns = 	Pattern.where(dataset_id: datasetid.id)
+	scores = patterns.pluck(:score)									         # score array from all patterns of current puzzle
 	high = scores.max.to_i
 
 	## Try to avoid puzzles with negative score, or i could use ceratin cut off here to avoid a minimum score puzzles
@@ -48,7 +48,7 @@ Dataset.find_each do |id|
 		high_mismatch_sel = 0
 		high_read_mm_sel = []
 
-		Pattern.where(dataset_id: id).each do |pattern|
+		patterns.each do |pattern|
 			if pattern.score.to_i == high
 				counter = Fraxinus.mm_allreads(pattern.cigar_files, samreads).to_i
 				selectcount = Fraxinus.mm_selreads(pattern.cigar_files, selreads).to_i
@@ -77,7 +77,7 @@ Dataset.find_each do |id|
 			high_read_mm_sel_mean = high_read_mm_sel.inject(:+).to_f/high_read_mm_sel.size
 		end
 
-		toplist.puts "#{data.id}\t#{high}\t#{highcount}\t#{inputreadcount}\t#{allreadcount}\t#{high_mmpercent}\t#{high_read_mm_mean}\t#{selreadcount}\t#{high_mm_sel_percent}\t#{high_read_mm_sel_mean}\n"
+		toplist.puts "#{datasetid.id}\t#{high}\t#{highcount}\t#{inputreadcount}\t#{allreadcount}\t#{high_mmpercent}\t#{high_read_mm_mean}\t#{selreadcount}\t#{high_mm_sel_percent}\t#{high_read_mm_sel_mean}\n"
 	end
 end
 

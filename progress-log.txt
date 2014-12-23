@@ -1,4 +1,5 @@
+
 Reads selected covering the alt allele
-ashwellthorpe1_vs_tgac1-pe.sorted.bam-selected.sam	ashwellthorpe1_vs_tgac1-pe.sorted.bam	45456
-ashwellthorpe2_vs_tgac1-pe.sorted.bam-selected.sam	ashwellthorpe2_vs_tgac1-pe.sorted.bam	16315
-upton_broad_and_marshes_vs_tgac1-pe.sorted.bam-selected.sam	upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	73913
+ashwellthorpe1_vs_tgac1-pe.sorted.bam-selected.sam	ashwellthorpe1_vs_tgac1-pe.sorted.bam	21222
+ashwellthorpe2_vs_tgac1-pe.sorted.bam-selected.sam	ashwellthorpe2_vs_tgac1-pe.sorted.bam	13646
+upton_broad_and_marshes_vs_tgac1-pe.sorted.bam-selected.sam	upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	28631
