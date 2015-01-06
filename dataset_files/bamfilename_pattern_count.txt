@@ -1,0 +1,4 @@
+bam_filename	Pattern_count
+ashwellthorpe1_vs_tgac1-pe.sorted.bam	3458
+ashwellthorpe2_vs_tgac1-pe.sorted.bam	1291
+upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	5338
