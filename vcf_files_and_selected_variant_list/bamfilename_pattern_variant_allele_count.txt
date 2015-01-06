@@ -1,0 +1,5 @@
+Variants	bamfile_name
+305 	ashwellthorpe_AT1_vs_tgac1_selected.vcf
+404 	ashwellthorpe_AT2_vs_tgac1_selected.vcf
+453 	upton_broads_vs_tgac1_selected.vcf
+1162	total
