@@ -1,0 +1,15 @@
+
+Reads selected covering the alt allele
+ashwellthorpe1_vs_tgac1-pe.sorted.bam-selected.sam	ashwellthorpe1_vs_tgac1-pe.sorted.bam	21222
+ashwellthorpe2_vs_tgac1-pe.sorted.bam-selected.sam	ashwellthorpe2_vs_tgac1-pe.sorted.bam	13646
+upton_broad_and_marshes_vs_tgac1-pe.sorted.bam-selected.sam	upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	28631
+
+Number of variants from each strain
+vcf_file	bam_file	snp	indel
+ashwellthorpe1_vs_tgac1-pe.sorted.bam.vcf	ashwellthorpe1_vs_tgac1-pe.sorted.bam	249	53
+ashwellthorpe2_vs_tgac1-pe.sorted.bam.vcf	ashwellthorpe2_vs_tgac1-pe.sorted.bam	353	51
+upton_broad_and_marshes_vs_tgac1-pe.sorted.bam.vcf	upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	397	56
+
+ashwellthorpe1_vs_tgac1-pe.sorted.bam	snp	2927	indel	521		10
+ashwellthorpe2_vs_tgac1-pe.sorted.bam	snp	1121	indel	170
+upton_broad_and_marshes_vs_tgac1-pe.sorted.bam	snp	4964	indel	374
