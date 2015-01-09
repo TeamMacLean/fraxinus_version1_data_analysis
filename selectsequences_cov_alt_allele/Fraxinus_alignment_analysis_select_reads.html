@@ -187,7 +187,8 @@ hljs.initHighlightingOnLoad();
 Resulting file has following header  </p>
 
 <ul>
-<li><code>&quot;ID&quot;  &quot;HighScore&quot;  &quot;NoOfUsersWithHighScore&quot;  &quot;NoOfReadsinPuzzle&quot;  &quot;NoOfUsableReadsinPuzzle&quot; &quot;UserPercentDifferntToBWA&quot;  &quot;MeanPercentOfReadsDifferent&quot;  &quot;NoOfReadsinPuzzleCovALT&quot;  &quot;UserPercentDifferntToBWACovALT&quot;   &quot;MeanPercentOfReadsDifferentCovALT&quot;</code><br/></li>
+<li><code>&quot;ID&quot;  &quot;HighScore&quot;  &quot;NoOfUsersWithHighScore&quot;  &quot;NoOfReadsinPuzzle&quot;  &quot;NoOfUsableReadsinPuzzle&quot; &quot;UserPercentDifferntToBWA&quot;  &quot;MeanPercentOfReadsDifferent&quot;  &quot;NoOfReadsinPuzzleCovALT&quot;  &quot;UserPercentDifferntToBWACovALT&quot;   &quot;MeanPercentOfReadsDifferentCovALT&quot;</code></li>
+<li><code>ID  variant  HighScore   NoOfUsersWithHighScore  NoOfReadsinPuzzle   NoOfUsableReadsinPuzzle UserPercentDifferntToBWA    MeanPercentOfReadsDifferent NoOfReadsinPuzzleCovALT UserPercentDifferntToBWACovALT  MeanPercentOfReadsDifferentCovALT</code></li>
 </ul>
 
 <p>Meaning of the terms used in the headers mentioned above:</p>
@@ -252,7 +253,7 @@ for puzzle data extraction, only these information from these reads is used. And
 plot2 &lt;- ggplot(data = all_reads, aes(NoOfUsableReadsinPuzzle)) + geom_histogram(binwidth = 1) + 
     scale_y_sqrt() + ggtitle(&quot;Usable reads in Puzzle distribution&quot;)
 plot3 &lt;- ggplot(data = all_reads, aes(NoOfReadsinPuzzleCovALT)) + geom_histogram(binwidth = 1) + 
-    scale_y_sqrt() + ggtitle(&quot;Selected &amp; usable reads in Puzzle, covering ALT allele distribution&quot;)
+    scale_y_sqrt() + ggtitle(&quot;Usable reads in Puzzle covering variant allele distribution&quot;)
 grid.arrange(plot1, plot2, plot3, ncol = 3)
 </code></pre>
 
@@ -273,6 +274,9 @@ grid.arrange(plot1, plot2, plot3, ncol = 3)
 </code></pre>
 
 <p><img src="figure/unnamed-chunk-3.pdf" alt="plot of chunk unnamed-chunk-3"/> </p>
+
+<pre><code class="r">
+</code></pre>
 
 <h3>Distribution of percentage of users made a puzzle alignment different from BWA:</h3>
 
@@ -295,6 +299,73 @@ grid.arrange(plot1, plot2, ncol = 2)
 </code></pre>
 
 <p><img src="figure/unnamed-chunk-5.pdf" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<h3>Distribution of percentage of users made a puzzle alignment different from BWA with percent of reads different:</h3>
+
+<pre><code class="r">plot1 &lt;- ggplot(data = all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5, 
+    0) * 5), fill = factor(round(all_reads$MeanPercentOfReadsDifferentCovALT/5, 
+    0) * 5))) + geom_bar(show_guide = FALSE) + labs(x = NULL, y = &quot;Frequency&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;)
+plot2 &lt;- ggplot(data = all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5, 
+    0) * 5), fill = factor(round(all_reads$MeanPercentOfReadsDifferentCovALT/5, 
+    0) * 5))) + geom_bar() + labs(x = NULL, y = &quot;Frequency&quot;, fill = &quot;% of reads different&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;) + ylim(0, 30) + theme(legend.position = &quot;top&quot;)
+grid.arrange(plot1, plot2, nrow = 2, heights = c(1.5, 1))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-6.pdf" alt="plot of chunk unnamed-chunk-6"/> </p>
+
+<h3>Distribution of percentage of users made a puzzle alignment different from BWA:</h3>
+
+<pre><code class="r">plot1 &lt;- ggplot(data = all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5, 
+    0) * 5))) + geom_bar(show_guide = FALSE) + labs(x = NULL, y = &quot;Frequency&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;)
+plot2 &lt;- ggplot(data = all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5, 
+    0) * 5))) + geom_bar() + labs(x = NULL, y = &quot;Frequency&quot;) + ggtitle(&quot;% user alignments different to BWA&quot;) + 
+    ylim(0, 30)
+grid.arrange(plot1, plot2, nrow = 2, heights = c(1.5, 1))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-7.pdf" alt="plot of chunk unnamed-chunk-7"/> </p>
+
+<pre><code class="r">
+</code></pre>
+
+<h3>Distribution of percentage of users made a puzzle alignment different from BWA with percent of reads different:</h3>
+
+<pre><code class="r">snp &lt;- all_reads[all_reads$variant == &quot;snp&quot;, ]
+row.names(snp) &lt;- NULL
+
+plot1 &lt;- ggplot(data = snp, aes(factor(round(snp$UserPercentDifferntToBWACovALT/5, 
+    0) * 5), fill = factor(round(snp$MeanPercentOfReadsDifferentCovALT/5, 0) * 
+    5))) + geom_bar(show_guide = FALSE) + labs(x = NULL, y = &quot;Frequency&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;)
+plot2 &lt;- ggplot(data = snp, aes(factor(round(snp$UserPercentDifferntToBWACovALT/5, 
+    0) * 5), fill = factor(round(snp$MeanPercentOfReadsDifferentCovALT/5, 0) * 
+    5))) + geom_bar() + labs(x = NULL, y = &quot;Frequency&quot;, fill = &quot;% of reads different&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;) + ylim(0, 30) + theme(legend.position = &quot;top&quot;)
+grid.arrange(plot1, plot2, nrow = 2, heights = c(1.5, 1))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-8.pdf" alt="plot of chunk unnamed-chunk-8"/> </p>
+
+<h3>Distribution of percentage of users made a puzzle alignment different from BWA with percent of reads different:</h3>
+
+<pre><code class="r">indel &lt;- all_reads[all_reads$variant == &quot;indel&quot;, ]
+row.names(indel) &lt;- NULL
+
+plot1 &lt;- ggplot(data = indel, aes(factor(round(indel$UserPercentDifferntToBWACovALT/5, 
+    0) * 5), fill = factor(round(indel$MeanPercentOfReadsDifferentCovALT/5, 
+    0) * 5))) + geom_bar(show_guide = FALSE) + labs(x = NULL, y = &quot;Frequency&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;)
+plot2 &lt;- ggplot(data = indel, aes(factor(round(indel$UserPercentDifferntToBWACovALT/5, 
+    0) * 5), fill = factor(round(indel$MeanPercentOfReadsDifferentCovALT/5, 
+    0) * 5))) + geom_bar() + labs(x = NULL, y = &quot;Frequency&quot;, fill = &quot;% of reads different&quot;) + 
+    ggtitle(&quot;% user alignments different to BWA&quot;) + ylim(0, 30) + theme(legend.position = &quot;top&quot;)
+grid.arrange(plot1, plot2, nrow = 2, heights = c(1.5, 1))
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-9.pdf" alt="plot of chunk unnamed-chunk-9"/> </p>
 
 </body>
 
