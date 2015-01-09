@@ -5,7 +5,8 @@ Background
 --------------------------------------------------------
 Fraxinus user alingments with highest score for each puzzle are extracted from the SQL data base.  
 Resulting file has following header  
-* `"ID"  "HighScore"  "NoOfUsersWithHighScore"  "NoOfReadsinPuzzle"  "NoOfUsableReadsinPuzzle" "UserPercentDifferntToBWA"  "MeanPercentOfReadsDifferent"  "NoOfReadsinPuzzleCovALT"  "UserPercentDifferntToBWACovALT"	"MeanPercentOfReadsDifferentCovALT"`  
+* `"ID"  "HighScore"  "NoOfUsersWithHighScore"  "NoOfReadsinPuzzle"  "NoOfUsableReadsinPuzzle" "UserPercentDifferntToBWA"  "MeanPercentOfReadsDifferent"  "NoOfReadsinPuzzleCovALT"  "UserPercentDifferntToBWACovALT"	"MeanPercentOfReadsDifferentCovALT"`
+* `ID  variant	HighScore	NoOfUsersWithHighScore	NoOfReadsinPuzzle	NoOfUsableReadsinPuzzle	UserPercentDifferntToBWA	MeanPercentOfReadsDifferent	NoOfReadsinPuzzleCovALT	UserPercentDifferntToBWACovALT	MeanPercentOfReadsDifferentCovALT`
 
 Meaning of the terms used in the headers mentioned above:
 
@@ -55,7 +56,7 @@ There are `r length(all_reads[,1])` puzzles in the present dataset
 ```{r fig.width=21, fig.height=6}
 plot1 <- ggplot(data=all_reads, aes(NoOfReadsinPuzzle)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("All reads in Puzzle distribution")
 plot2 <- ggplot(data=all_reads, aes(NoOfUsableReadsinPuzzle)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("Usable reads in Puzzle distribution")
-plot3 <- ggplot(data=all_reads, aes(NoOfReadsinPuzzleCovALT)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("Selected & usable reads in Puzzle, covering ALT allele distribution")
+plot3 <- ggplot(data=all_reads, aes(NoOfReadsinPuzzleCovALT)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("Usable reads in Puzzle covering variant allele distribution")
 grid.arrange(plot1, plot2, plot3, ncol=3)
 
 ```
@@ -73,6 +74,7 @@ ggplot(data=all_reads, aes(NoOfUsersWithHighScore)) + geom_histogram(binwidth=5)
 
 ```{r fig.width=7, fig.height=6}
 ggplot(data=all_reads, aes(HighScore)) + geom_histogram(binwidth=10) + scale_y_sqrt() + ggtitle("High Score distribution")
+
 
 ```
 
@@ -93,6 +95,55 @@ grid.arrange(plot1, plot2, ncol=2)
 plot1 <- ggplot(data=all_reads, aes(MeanPercentOfReadsDifferent)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("% Relative to all reads")
 plot2 <- ggplot(data=all_reads, aes(MeanPercentOfReadsDifferentCovALT)) + geom_histogram(binwidth=1) + scale_y_sqrt() + ggtitle("% Relative to reads covering ALT allele")
 grid.arrange(plot1, plot2, ncol=2)
+
+```
+
+
+### Distribution of percentage of users made a puzzle alignment different from BWA with percent of reads different:
+
+```{r fig.width=10, fig.height=9}
+plot1 <- ggplot(data=all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5,0)*5), fill=factor(round(all_reads$MeanPercentOfReadsDifferentCovALT/5,0)*5))) + geom_bar(show_guide=FALSE) + labs(x=NULL, y="Frequency") + ggtitle("% user alignments different to BWA")
+plot2 <- ggplot(data=all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5,0)*5), fill=factor(round(all_reads$MeanPercentOfReadsDifferentCovALT/5,0)*5))) + geom_bar() + labs(x=NULL, y="Frequency", fill="% of reads different") + ggtitle("% user alignments different to BWA") + ylim(0,30) + theme(legend.position="top")
+grid.arrange(plot1, plot2, nrow=2, heights=c(1.5,1))
+
+```
+
+
+
+### Distribution of percentage of users made a puzzle alignment different from BWA:
+
+```{r fig.width=10, fig.height=9}
+plot1 <- ggplot(data=all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5,0)*5))) + geom_bar(show_guide=FALSE) + labs(x=NULL, y="Frequency") + ggtitle("% user alignments different to BWA")
+plot2 <- ggplot(data=all_reads, aes(factor(round(all_reads$UserPercentDifferntToBWACovALT/5,0)*5))) + geom_bar() + labs(x=NULL, y="Frequency") + ggtitle("% user alignments different to BWA") + ylim(0,30)
+grid.arrange(plot1, plot2, nrow=2, heights=c(1.5,1))
+
+
+```
+
+
+### Distribution of percentage of users made a puzzle alignment different from BWA with percent of reads different:
+
+```{r fig.width=10, fig.height=9}
+snp <- all_reads[all_reads$variant == "snp",]
+row.names(snp) <- NULL
+
+plot1 <- ggplot(data=snp, aes(factor(round(snp$UserPercentDifferntToBWACovALT/5,0)*5), fill=factor(round(snp$MeanPercentOfReadsDifferentCovALT/5,0)*5))) + geom_bar(show_guide=FALSE) + labs(x=NULL, y="Frequency") + ggtitle("% user alignments different to BWA")
+plot2 <- ggplot(data=snp, aes(factor(round(snp$UserPercentDifferntToBWACovALT/5,0)*5), fill=factor(round(snp$MeanPercentOfReadsDifferentCovALT/5,0)*5))) + geom_bar() + labs(x=NULL, y="Frequency", fill="% of reads different") + ggtitle("% user alignments different to BWA") + ylim(0,30) + theme(legend.position="top")
+grid.arrange(plot1, plot2, nrow=2, heights=c(1.5,1))
+
+```
+
+
+
+### Distribution of percentage of users made a puzzle alignment different from BWA with percent of reads different:
+
+```{r fig.width=10, fig.height=9}
+indel <- all_reads[all_reads$variant == "indel",]
+row.names(indel) <- NULL
+
+plot1 <- ggplot(data=indel, aes(factor(round(indel$UserPercentDifferntToBWACovALT/5,0)*5), fill=factor(round(indel$MeanPercentOfReadsDifferentCovALT/5,0)*5))) + geom_bar(show_guide=FALSE) + labs(x=NULL, y="Frequency") + ggtitle("% user alignments different to BWA")
+plot2 <- ggplot(data=indel, aes(factor(round(indel$UserPercentDifferntToBWACovALT/5,0)*5), fill=factor(round(indel$MeanPercentOfReadsDifferentCovALT/5,0)*5))) + geom_bar() + labs(x=NULL, y="Frequency", fill="% of reads different") + ggtitle("% user alignments different to BWA") + ylim(0,30) + theme(legend.position="top")
+grid.arrange(plot1, plot2, nrow=2, heights=c(1.5,1))
 
 ```
 
