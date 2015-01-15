@@ -1,0 +1,71 @@
+---
+output:
+  html_document:
+    fig_caption: yes
+    theme: spacelab
+    toc: no
+---
+# **The Capability Of The Human Computer - Lessons From Fraxinus Alignment Tasks**
+
+Load libraries and the data
+```{r setup, include=FALSE}
+library(knitr)
+library(markdown)
+opts_chunk$set(dev = 'pdf')
+# load the required libraries and functions
+library(ggplot2)
+library(gridExtra)
+library(ggmap)
+library(rworldmap)
+library(countrycode)
+library(scales)
+library(reshape2)
+
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+
+mytheme <- theme(panel.background = element_rect(fill='white', colour='black'),
+        text = element_text(size = 15, face='bold', colour='black'),
+        axis.title.x = element_text(size = 16, face='bold', color='black', vjust = -1),
+        axis.text = element_text(size = 13, face='bold', color='black'),
+        panel.grid.major = element_line(linetype = 'dotted', colour='black'),
+        panel.border = element_rect(fill=NA, linetype = "solid", colour='black'),
+        plot.margin=unit(c(2,2,5,2),'mm'))
+
+```
+
+...     
+
+...  		
+
+### Figure 5
+### Powerlaw - model of player distribution
+
+```{r Figure5c, echo=FALSE, fig.width=10, fig.height=5}
+data1 <- read.delim(file="visit_iterations_original.txt", header = TRUE)
+data1$Type <- c(rep("Fraxinus", nrow(data1)))
+data2 <- read.delim(file="visit_iterations_original_no_press.txt", header = TRUE)
+data2$Type <- c(rep("Fraxinus No press", nrow(data1)))
+data3 <- read.delim(file="visit_iterations_random_press_increments_3.txt", header = TRUE)
+data3$Type <- c(rep("Random increments 3players", nrow(data1)))
+data4 <- read.delim(file="visit_iterations_random_press_increments_10.txt", header = TRUE)
+data4$Type <- c(rep("Random increments 10players", nrow(data1)))
+data5 <- read.delim(file="visit_iterations_many_press_increments_3.txt", header = TRUE)
+data5$Type <- c(rep("Initial increments 3players", nrow(data1)))
+data6 <- read.delim(file="visit_iterations_many_press_increments_10.txt", header = TRUE)
+data6$Type <- c(rep("Initial increments 10players", nrow(data1)))
+data <- rbind(data1,data2,data3,data4,data5,data6)
+data$Iteration <- NULL
+cols <- c("Fraxinus"="#000000", "Fraxinus No press"="orange", "Random increments 3players"="purple",
+          "Random increments 10players"="dark green", "Initial increments 3players"="blue",
+          "Initial increments 10players"="red")
+ggplot(data=data, ) + geom_point(aes(x=Day, y=Players, colour=Type)) + geom_line(aes(x=Day, y=Players, colour=Type)) + scale_x_log10() + scale_y_log10() + labs(x="Days", y="Number of human computation hours") + mytheme + scale_colour_manual(values = cols)
+
+```
+
+...			
+
+...			
