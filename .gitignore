@@ -1,0 +1,8 @@
+# Can ignore specific files
+.DS_Store
+
+# ignore google analytics config files
+*.p12
+*.cache
+ga_config.yml
+
