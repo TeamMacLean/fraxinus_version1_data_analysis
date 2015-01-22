@@ -1,0 +1,4 @@
+deviceCategory	sessions
+tablet	832
+mobile	1124
+desktop	61176

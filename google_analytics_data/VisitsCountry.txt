@@ -1,0 +1,137 @@
+country	users	sessions
+United Kingdom	13975	36050
+United States	4965	10214
+Canada	841	1823
+France	881	1652
+Germany	626	1237
+Australia	607	1222
+Portugal	160	1088
+Russia	523	758
+Ukraine	93	655
+Belgium	255	457
+Netherlands	221	435
+Italy	212	407
+Ireland	229	394
+Brazil	194	383
+Sweden	207	350
+Spain	171	332
+Hungary	165	320
+Mexico	131	309
+New Zealand	161	303
+Malaysia	165	280
+Thailand	166	278
+Finland	89	215
+India	142	197
+Philippines	145	193
+Austria	94	183
+Greece	114	177
+Poland	92	165
+Switzerland	93	162
+Norway	86	152
+Denmark	100	147
+Israel	48	142
+South Africa	79	128
+Turkey	83	126
+Hong Kong	69	123
+Japan	53	122
+Argentina	66	114
+Singapore	77	105
+Romania	72	103
+Czech Republic	55	99
+Croatia	59	94
+Taiwan	40	80
+Serbia	45	79
+Bulgaria	47	75
+Slovakia	25	65
+Slovenia	31	65
+Colombia	38	59
+Lithuania	38	54
+United Arab Emirates	27	52
+Chile	22	41
+(not set)	30	39
+Uzbekistan	5	37
+Estonia	26	36
+Isle of Man	19	35
+Iceland	19	27
+Morocco	20	27
+Pakistan	22	27
+China	20	25
+Saudi Arabia	15	25
+Indonesia	17	24
+Palestine	3	24
+Puerto Rico	20	24
+Belarus	20	22
+Latvia	13	20
+Réunion	8	20
+Venezuela	13	20
+Egypt	13	19
+Guernsey	13	19
+South Korea	15	19
+Uruguay	10	16
+Kenya	7	15
+Peru	8	15
+Syria	4	15
+Cyprus	13	14
+Malta	11	14
+Trinidad & Tobago	11	14
+Costa Rica	11	13
+Luxembourg	8	13
+Panama	8	13
+Macedonia (FYROM)	7	12
+Moldova	9	12
+Kazakhstan	9	10
+Bangladesh	7	9
+Bosnia & Herzegovina	7	8
+Dominican Republic	7	8
+Mauritius	5	8
+Mongolia	6	8
+Qatar	4	8
+Senegal	5	8
+Tunisia	8	8
+Jersey	6	7
+Kosovo	6	7
+Lebanon	6	7
+Vietnam	7	7
+Algeria	6	6
+Faroe Islands	5	6
+Nepal	6	6
+Georgia	5	5
+Gibraltar	5	5
+Guatemala	2	5
+Kuwait	4	5
+Fiji	4	4
+Jordan	4	4
+Myanmar (Burma)	2	4
+Namibia	3	4
+Bahrain	2	3
+Ecuador	2	3
+Kyrgyzstan	3	3
+Macau	3	3
+Montenegro	3	3
+Oman	3	3
+Åland Islands	3	3
+Afghanistan	1	2
+Albania	2	2
+Armenia	2	2
+Botswana	1	2
+El Salvador	2	2
+Grenada	2	2
+Guadeloupe	1	2
+Iraq	1	2
+Maldives	2	2
+U.S. Virgin Islands	1	2
+Azerbaijan	1	1
+Belize	1	1
+Bermuda	1	1
+Brunei	1	1
+Ghana	1	1
+Iran	1	1
+Mayotte	1	1
+New Caledonia	1	1
+Paraguay	1	1
+San Marino	1	1
+Sint Maarten	1	1
+Sri Lanka	1	1
+St. Kitts & Nevis	1	1
+Suriname	1	1
+Uganda	1	1

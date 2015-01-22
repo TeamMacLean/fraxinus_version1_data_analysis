@@ -50,8 +50,11 @@ else
 end
 
 ## For the moment start and end dates defined here
-@startDate = DateTime.now.prev_month.strftime("%Y-%m-%d")
-@endDate = DateTime.now.strftime("%Y-%m-%d")
+#@startDate = DateTime.now.prev_month.strftime("%Y-%m-%d")
+#@endDate = DateTime.now.strftime("%Y-%m-%d")
+@startDate = Date.parse('2013-08-12').to_s
+@endDate = Date.parse('2014-08-04').to_s
+
 
 ## Query Parameters Summary https://developers.google.com/analytics/devguides/reporting/core/v3/reference#q_summary
 ## Funcation to query google for a set of analytics attributes
